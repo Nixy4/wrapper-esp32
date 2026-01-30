@@ -34,10 +34,13 @@ esp_err_t I2sBus::Init(I2sBusConfig& bus_config)
 
     esp_err_t ret = i2s_new_channel(&bus_config, &m_tx_chan_handle, &m_rx_chan_handle);
     if (ret == ESP_OK) {
+        m_port = bus_config.id;
         m_logger.Info("Initialized (Port: %d, Role: %d)", bus_config.id, bus_config.role);
     } else {
         m_logger.Error("Failed to initialize: %s", esp_err_to_name(ret));
     }
+
+    m_port = bus_config.id;
     return ret;
 }
 
@@ -54,12 +57,14 @@ esp_err_t I2sBus::ConfigureTxChannel(I2sChanStdConfig& chan_config)
         return ret;
     }
 
-    ret = i2s_channel_enable(m_tx_chan_handle);
-    if (ret == ESP_OK) {
-        m_logger.Info("STD TX Channel enabled (Sample Rate: %lu)", chan_config.clk_cfg.sample_rate_hz);
-    } else {
-        m_logger.Error("Failed to enable TX Channel: %s", esp_err_to_name(ret));
-    }
+    // ret = i2s_channel_enable(m_tx_chan_handle);
+    // if (ret == ESP_OK) {
+    //     m_logger.Info("STD TX Channel enabled (Sample Rate: %lu)", chan_config.clk_cfg.sample_rate_hz);
+    // } else {
+    //     m_logger.Error("Failed to enable TX Channel: %s", esp_err_to_name(ret));
+    // }
+
+    m_tx_sample_rate_hz = chan_config.clk_cfg.sample_rate_hz;
     return ret;
 }
 
@@ -76,13 +81,47 @@ esp_err_t I2sBus::ConfigureTxChannel(I2SChanTdmConfig& chan_config)
         return ret;
     }
 
-    ret = i2s_channel_enable(m_tx_chan_handle);
-    if (ret == ESP_OK) {
-        m_logger.Info("TDM TX Channel enabled (Sample Rate: %lu)", chan_config.clk_cfg.sample_rate_hz);
-    } else {
-        m_logger.Error("Failed to enable TX Channel: %s", esp_err_to_name(ret));
-    }
+    // ret = i2s_channel_enable(m_tx_chan_handle);
+    // if (ret == ESP_OK) {
+    //     m_logger.Info("TDM TX Channel enabled (Sample Rate: %lu)", chan_config.clk_cfg.sample_rate_hz);
+    // } else {
+    //     m_logger.Error("Failed to enable TX Channel: %s", esp_err_to_name(ret));
+    // }
+
+    m_tx_sample_rate_hz = chan_config.clk_cfg.sample_rate_hz;
     return ret;
+}
+
+esp_err_t I2sBus::EnableTxChannel()
+{
+    if (m_tx_chan_handle == NULL) {
+        return ESP_ERR_INVALID_STATE;
+    }
+    return i2s_channel_enable(m_tx_chan_handle);
+}
+
+esp_err_t I2sBus::EnableRxChannel()
+{
+    if (m_rx_chan_handle == NULL) {
+        return ESP_ERR_INVALID_STATE;
+    }
+    return i2s_channel_enable(m_rx_chan_handle);
+}
+
+esp_err_t I2sBus::DisableTxChannel()
+{
+    if (m_tx_chan_handle == NULL) {
+        return ESP_ERR_INVALID_STATE;
+    }
+    return i2s_channel_disable(m_tx_chan_handle);
+}
+
+esp_err_t I2sBus::DisableRxChannel()
+{
+    if (m_rx_chan_handle == NULL) {
+        return ESP_ERR_INVALID_STATE;
+    }
+    return i2s_channel_disable(m_rx_chan_handle);
 }
 
 esp_err_t I2sBus::ConfigureRxChannel(I2sChanStdConfig& chan_config)
@@ -98,12 +137,14 @@ esp_err_t I2sBus::ConfigureRxChannel(I2sChanStdConfig& chan_config)
         return ret;
     }
 
-    ret = i2s_channel_enable(m_rx_chan_handle);
-    if (ret == ESP_OK) {
-        m_logger.Info("STD RX Channel enabled (Sample Rate: %lu)", chan_config.clk_cfg.sample_rate_hz);
-    } else {
-        m_logger.Error("Failed to enable RX Channel: %s", esp_err_to_name(ret));
-    }
+    // ret = i2s_channel_enable(m_rx_chan_handle);
+    // if (ret == ESP_OK) {
+    //     m_logger.Info("STD RX Channel enabled (Sample Rate: %lu)", chan_config.clk_cfg.sample_rate_hz);
+    // } else {
+    //     m_logger.Error("Failed to enable RX Channel: %s", esp_err_to_name(ret));
+    // }
+
+    m_rx_sample_rate_hz = chan_config.clk_cfg.sample_rate_hz;
     return ret;
 }
 
@@ -120,11 +161,13 @@ esp_err_t I2sBus::ConfigureRxChannel(I2SChanTdmConfig& chan_config)
         return ret;
     }
 
-    ret = i2s_channel_enable(m_rx_chan_handle);
-    if (ret == ESP_OK) {
-        m_logger.Info("TDM RX Channel enabled (Sample Rate: %lu)", chan_config.clk_cfg.sample_rate_hz);
-    } else {
-        m_logger.Error("Failed to enable RX Channel: %s", esp_err_to_name(ret));
-    }
+    // ret = i2s_channel_enable(m_rx_chan_handle);
+    // if (ret == ESP_OK) {
+    //     m_logger.Info("TDM RX Channel enabled (Sample Rate: %lu)", chan_config.clk_cfg.sample_rate_hz);
+    // } else {
+    //     m_logger.Error("Failed to enable RX Channel: %s", esp_err_to_name(ret));
+    // }
+
+    m_rx_sample_rate_hz = chan_config.clk_cfg.sample_rate_hz;
     return ret;
 }

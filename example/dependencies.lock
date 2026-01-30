@@ -20,7 +20,7 @@ dependencies:
       require: private
       version: '>=5.1'
     source:
-      registry_url: https://components.espressif.com
+      registry_url: https://components.espressif.com/
       type: service
     version: 2.1.4
   espressif/esp_codec_dev:
@@ -30,7 +30,7 @@ dependencies:
       require: private
       version: '>=4.0'
     source:
-      registry_url: https://components.espressif.com
+      registry_url: https://components.espressif.com/
       type: service
     version: 1.5.4
   espressif/esp_jpeg:
@@ -54,7 +54,7 @@ dependencies:
       require: private
       version: '>=4.4'
     source:
-      registry_url: https://components.espressif.com
+      registry_url: https://components.espressif.com/
       type: service
     version: 2.0.2
   espressif/esp_lcd_touch:
@@ -78,7 +78,7 @@ dependencies:
       require: private
       version: '>=4.4.2'
     source:
-      registry_url: https://components.espressif.com
+      registry_url: https://components.espressif.com/
       type: service
     version: 1.1.0
   espressif/esp_lvgl_port:
@@ -92,7 +92,7 @@ dependencies:
       require: public
       version: '>=8,<10'
     source:
-      registry_url: https://components.espressif.com
+      registry_url: https://components.espressif.com/
       type: service
     version: 2.7.0
   espressif/m5stack_core_s3:
@@ -142,6 +142,21 @@ dependencies:
     dependencies:
     - name: idf
       version: '>=5.5.1'
+    - name: espressif/esp32-camera
+      public: true
+      version: ^2.0.11
+    - name: espressif/esp_codec_dev
+      public: true
+      version: ~1.5
+    - name: espressif/esp_lcd_ili9341
+      public: true
+      version: ^2.0.1
+    - name: espressif/esp_lcd_touch_ft5x06
+      public: true
+      version: ^1
+    - name: espressif/esp_lvgl_port
+      public: true
+      version: ^2
     - name: espressif/m5stack_core_s3
       public: true
       rules:
@@ -153,7 +168,7 @@ dependencies:
       - if: target == esp32p4
       version: ^1.0.0
     source:
-      path: /home/nix/ws/nix-wrapper-esp32
+      path: /home/nixy/ws/nix-wrapper-esp32
       type: local
     targets:
     - esp32s3
@@ -161,6 +176,6 @@ dependencies:
     version: 0.1.0
 direct_dependencies:
 - nix-wrapper-esp32
-manifest_hash: f7e3471057cddfaae85241af5cc3762d6e7456086c9803186653fec4f293cdaa
+manifest_hash: 88196bb1d2b2cbc70e80b730a3d47b95a85083eed45f84a22b33be97d60aa3fa
 target: esp32s3
 version: 2.0.0

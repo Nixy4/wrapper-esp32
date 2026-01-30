@@ -5,17 +5,20 @@
       "compilerPath": "${env:HOME}/.espressif/tools/xtensa-esp-elf/esp-14.2.0_20241119/xtensa-esp-elf/bin/xtensa-esp32-elf-gcc",
       "compileCommands": "${workspaceFolder}/build/compile_commands.json",
       "includePath": [
-        "${workspaceFolder}/**",
-        "${workspaceFolder}/../",
         "${env:IDF_PATH}/components/**",
-        "${env:IDF_PATH}/components/**/**"
+        "${env:IDF_PATH}/components/**/**",
+        "${workspaceFolder}/main",
+        "${workspaceFolder}/build/config",
+        "${workspaceFolder}/managed_components/**",
+        "${workspaceFolder}/../"
       ],
       "browse": {
         "path": [
-          "${workspaceFolder}",
           "${env:IDF_PATH}/components",
           "${env:IDF_PATH}/components/**/**",
-          "${workspaceFolder}/../"
+          "${workspaceFolder}/managed_components/**",
+          "${workspaceFolder}/main",
+          "${workspaceFolder}/../**"
         ],
         "limitSymbolsToIncludedHeaders": true
       },

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ni2c.hpp"
+#include "wrapper/ni2c.hpp"
 
 namespace nix
 {
@@ -13,10 +13,6 @@ public:
 
     Axp2101(Logger& logger);
     ~Axp2101();
-
-    esp_err_t Configure();
-    esp_err_t ReadRegister(uint8_t reg, uint8_t& data);
-    esp_err_t WriteRegister(uint8_t reg, uint8_t data);
 };
 
 }

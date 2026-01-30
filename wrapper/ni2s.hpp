@@ -1,9 +1,8 @@
+#pragma once
+#include "esp_err.h"
 #include "driver/i2s_std.h"
 #include "driver/i2s_tdm.h"
-#include "esp_err.h"
 #include "nlogger.hpp"
-
-#include <type_traits>
 
 namespace nix
 {
@@ -56,7 +55,8 @@ struct I2sChanStdConfig : public i2s_std_config_t
         gpio_num_t din,
         bool mclk_inv = false,
         bool bclk_inv = false,
-        bool ws_inv = false) : i2s_std_config_t{}  // Zero-initialize base struct using aggregate initialization
+        bool ws_inv = false
+      ) : i2s_std_config_t{}  // Zero-initialize base struct using aggregate initialization
     {
         clk_cfg.sample_rate_hz  = sample_rate_hz;
         clk_cfg.clk_src         = clk_src;
@@ -147,9 +147,11 @@ struct I2SChanTdmConfig : public i2s_tdm_config_t
 class I2sBus
 {
     Logger& m_logger;
+    i2s_port_t m_port;
     i2s_chan_handle_t m_tx_chan_handle = NULL;
     i2s_chan_handle_t m_rx_chan_handle = NULL;
-
+    uint32_t m_tx_sample_rate_hz = 0;
+    uint32_t m_rx_sample_rate_hz = 0;
 public:
     I2sBus(Logger& logger) : m_logger(logger) {}
     ~I2sBus();
@@ -158,6 +160,17 @@ public:
     esp_err_t ConfigureTxChannel(I2SChanTdmConfig& chan_config);
     esp_err_t ConfigureRxChannel(I2SChanTdmConfig& chan_config);
     esp_err_t ConfigureRxChannel(I2sChanStdConfig& chan_config);
+
+    esp_err_t EnableTxChannel();
+    esp_err_t EnableRxChannel();
+    esp_err_t DisableTxChannel();
+    esp_err_t DisableRxChannel();
+
+    i2s_port_t GetPort() const { return m_port; }
+    i2s_chan_handle_t GetTxHandle() const { return m_tx_chan_handle; }
+    i2s_chan_handle_t GetRxHandle() const { return m_rx_chan_handle; }
+    uint32_t GetTxSampleRate() const { return m_tx_sample_rate_hz; }
+    uint32_t GetRxSampleRate() const { return m_rx_sample_rate_hz; }
 };
 
 class I2sDeviceOutput
