@@ -1,6 +1,6 @@
-#include "ni2s.hpp"
+#include "wi2s.hpp"
 
-using namespace nix;
+using namespace wrapper;
 
 I2sBus::~I2sBus()
 {

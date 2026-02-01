@@ -2,11 +2,11 @@
 
 #include "esp_lcd_touch.h"
 #include "esp_lcd_panel_io.h"
-#include "ni2c.hpp"
-#include "nlogger.hpp"
+#include "wi2c.hpp"
+#include "wlogger.hpp"
 #include <functional>
 
-namespace nix
+namespace wrapper
 {
     /**
      * @brief Define the function pointer type for creating a new touch controller handle.
@@ -145,4 +145,4 @@ namespace nix
         esp_lcd_touch_handle_t GetHandle() const { return m_touch_handle; }
     };
 
-} // namespace nix
+} // namespace wrapper

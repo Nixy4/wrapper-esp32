@@ -6,11 +6,11 @@
 #include "esp_lcd_panel_ops.h"
 #include "esp_lcd_panel_dev.h"
 #include "esp_lcd_panel_ssd1306.h"
-#include "nlogger.hpp"
+#include "wlogger.hpp"
 #include <vector>
 #include <functional>
 
-namespace nix
+namespace wrapper
 {
 
 struct SpiBusConfig : public spi_bus_config_t
@@ -109,4 +109,4 @@ public:
     esp_err_t Read(size_t len, std::vector<uint8_t>& rx_data);
 };
 
-} // namespace nix
+} // namespace wrapper

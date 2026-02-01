@@ -1,8 +1,8 @@
-#include "nlvgl.hpp"
+#include "wlvgl.hpp"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 
-using namespace nix;
+using namespace wrapper;
 
 LvglPort::LvglPort(Logger& logger) 
     : m_logger(logger), 

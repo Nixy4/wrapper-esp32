@@ -4,10 +4,10 @@
 #include "esp_lcd_panel_ops.h"
 #include "esp_lcd_panel_dev.h"
 
-#include "ni2c.hpp"
-#include "nspi.hpp"
+#include "wi2c.hpp"
+#include "wspi.hpp"
 
-namespace nix
+namespace wrapper
 {
   // Define the function pointer type for creating a new panel
   using I2cLcdNewPanelFunc = std::function<esp_err_t(const esp_lcd_panel_io_handle_t, const esp_lcd_panel_dev_config_t*, esp_lcd_panel_handle_t*)>;
@@ -181,4 +181,4 @@ namespace nix
       ~SpiLcdIli9341();
   };
 
-} // namespace nix
+} // namespace wrapper

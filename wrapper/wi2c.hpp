@@ -1,9 +1,9 @@
 #pragma once
 #include <vector>
 #include "driver/i2c_master.h"
-#include "nlogger.hpp"
+#include "wlogger.hpp"
 
-namespace nix
+namespace wrapper
 {
 
 struct I2cBusConfig : public i2c_master_bus_config_t

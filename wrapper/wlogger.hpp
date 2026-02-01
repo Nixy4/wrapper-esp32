@@ -5,7 +5,7 @@
 #include <initializer_list>
 #include "esp_log.h"
 
-namespace nix
+namespace wrapper
 {
 
 class Logger 
@@ -72,4 +72,4 @@ public:
     }
 };
 
-} // namespace nix
+} // namespace wrapper

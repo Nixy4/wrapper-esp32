@@ -1,11 +1,11 @@
-#include "ni2c.hpp"
+#include "wi2c.hpp"
 #include <iomanip>
 #include <sstream>
 #include <cstring>
 #include <vector>
 
 // --- I2cBus ---
-using namespace nix;
+using namespace wrapper;
 
 I2cBus::I2cBus(Logger& logger) : m_logger(logger), m_bus_handle(nullptr) {
 }

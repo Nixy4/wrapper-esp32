@@ -1,11 +1,11 @@
 #pragma once
 
 #include "esp_lvgl_port.h"
-#include "ndisplay.hpp"
-#include "ntouch.hpp"
-#include "nlogger.hpp"
+#include "wdisplay.hpp"
+#include "wtouch.hpp"
+#include "wlogger.hpp"
 
-namespace nix
+namespace wrapper
 {
 
 /**
@@ -175,4 +175,4 @@ public:
     lv_indev_t* GetTouch() const { return m_lvgl_touch; }
 };
 
-} // namespace nix
+} // namespace wrapper

@@ -1,6 +1,6 @@
-#include "ndisplay.hpp"
+#include "wdisplay.hpp"
 
-using namespace nix;
+using namespace wrapper;
 // --- I2cLcd ---
 
 I2cLcd::I2cLcd(Logger& logger) : m_logger(logger), m_io_handle(NULL), m_panel_handle(NULL) {

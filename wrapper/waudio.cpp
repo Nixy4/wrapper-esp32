@@ -1,7 +1,7 @@
 #include <cmath>
-#include "naudio.hpp"
+#include "waudio.hpp"
 
-using namespace nix;
+using namespace wrapper;
 
 AudioCodec::AudioCodec(Logger& logger) : m_logger(logger)
 {

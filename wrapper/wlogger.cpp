@@ -1,6 +1,6 @@
-#include "nlogger.hpp"
+#include "wlogger.hpp"
 
-using namespace nix;
+using namespace wrapper;
 
 Logger::Logger() {
 }

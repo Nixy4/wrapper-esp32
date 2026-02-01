@@ -1,6 +1,6 @@
-#include "ntouch.hpp"
+#include "wtouch.hpp"
 
-using namespace nix;
+using namespace wrapper;
 
 I2cTouch::I2cTouch(Logger& logger) : m_logger(logger), m_io_handle(NULL), m_touch_handle(NULL)
 {

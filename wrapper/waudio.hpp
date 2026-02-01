@@ -3,11 +3,11 @@
 #include <functional>
 #include <esp_codec_dev.h>
 #include <esp_codec_dev_defaults.h>
-#include "nlogger.hpp"
-#include "ni2c.hpp"
-#include "ni2s.hpp"
+#include "wlogger.hpp"
+#include "wi2c.hpp"
+#include "wi2s.hpp"
 
-namespace nix
+namespace wrapper
 {
   class AudioCodec
   {
@@ -59,4 +59,4 @@ namespace nix
     esp_err_t TestMicrophone();//录制3秒音频并播放
   };
 
-} // namespace nix
+} // namespace wrapper

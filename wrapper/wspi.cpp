@@ -1,9 +1,9 @@
-#include "nspi.hpp"
+#include "wspi.hpp"
 #include <cstring>
 
 // --- SpiBus ---
 
-using namespace nix;
+using namespace wrapper;
 
 SpiBus::SpiBus(Logger& logger) : m_logger(logger), m_host_id(SPI2_HOST), m_initialized(false), 
     m_config(SPI2_HOST, GPIO_NUM_NC, GPIO_NUM_NC, GPIO_NUM_NC, 4092, SPI_DMA_CH_AUTO, SPICOMMON_BUSFLAG_MASTER) {

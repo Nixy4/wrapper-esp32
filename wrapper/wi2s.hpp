@@ -2,9 +2,9 @@
 #include "esp_err.h"
 #include "driver/i2s_std.h"
 #include "driver/i2s_tdm.h"
-#include "nlogger.hpp"
+#include "wlogger.hpp"
 
-namespace nix
+namespace wrapper
 {
 
 struct I2sBusConfig : public i2s_chan_config_t
@@ -186,4 +186,4 @@ public:
 };
 
 
-}; // namespace nix
+}; // namespace wrapper
