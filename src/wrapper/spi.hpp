@@ -6,7 +6,7 @@
 #include "esp_lcd_panel_ops.h"
 #include "esp_lcd_panel_dev.h"
 #include "esp_lcd_panel_ssd1306.h"
-#include "wlogger.hpp"
+#include "wrapper/logger.hpp"
 #include <vector>
 #include <functional>
 

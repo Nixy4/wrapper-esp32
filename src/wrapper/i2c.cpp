@@ -1,4 +1,4 @@
-#include "wi2c.hpp"
+#include "wrapper/i2c.hpp"
 #include <iomanip>
 #include <sstream>
 #include <cstring>

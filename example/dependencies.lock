@@ -138,7 +138,7 @@ dependencies:
       registry_url: https://components.espressif.com
       type: service
     version: 9.4.0
-  nix-wrapper-esp32:
+  wrapper-esp-idf:
     dependencies:
     - name: idf
       version: '>=5.5.1'
@@ -168,14 +168,14 @@ dependencies:
       - if: target == esp32p4
       version: ^1.0.0
     source:
-      path: /home/nixy/ws/nix-wrapper-esp32
+      path: /home/nixy/ws/wrapper-esp-idf
       type: local
     targets:
     - esp32s3
     - esp32p4
     version: 0.1.0
 direct_dependencies:
-- nix-wrapper-esp32
-manifest_hash: 88196bb1d2b2cbc70e80b730a3d47b95a85083eed45f84a22b33be97d60aa3fa
+- wrapper-esp-idf
+manifest_hash: dcdcad99d02709ccd0442cfd39ba8f58ecf2fc1472b4636563d2df307bbd1322
 target: esp32s3
 version: 2.0.0

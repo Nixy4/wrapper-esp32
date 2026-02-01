@@ -1,9 +1,9 @@
 #pragma once
 
 #include "esp_lvgl_port.h"
-#include "wdisplay.hpp"
-#include "wtouch.hpp"
-#include "wlogger.hpp"
+#include "wrapper/display.hpp"
+#include "wrapper/touch.hpp"
+#include "wrapper/logger.hpp"
 
 namespace wrapper
 {

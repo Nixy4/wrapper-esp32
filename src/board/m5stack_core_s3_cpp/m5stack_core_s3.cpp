@@ -3,21 +3,21 @@
 #include "esp_lcd_ili9341.h"
 #include "esp_lcd_touch_ft5x06.h"
 
-#include "wrapper/nlogger.hpp"
-#include "wrapper/ni2c.hpp"
-#include "wrapper/nspi.hpp"
-#include "wrapper/ni2s.hpp"
-#include "wrapper/ndisplay.hpp"
-#include "wrapper/ntouch.hpp"
-#include "wrapper/nlvgl.hpp"
-#include "wrapper/naudio.hpp"
+#include "wrapper/logger.hpp"
+#include "wrapper/i2c.hpp"
+#include "wrapper/spi.hpp"
+#include "wrapper/i2s.hpp"
+#include "wrapper/display.hpp"
+#include "wrapper/touch.hpp"
+#include "wrapper/lvgl.hpp"
+#include "wrapper/audio.hpp"
 
 #include "device/axp2101.hpp"
 #include "device/aw9523.hpp"
 
 #include "m5stack_core_s3.hpp"
 
-using namespace nix;
+using namespace wrapper;
 
 I2sBusConfig bus_config(I2S_NUM_0, I2S_ROLE_MASTER, 6, 240, true, false, 0);
 
@@ -232,6 +232,7 @@ std::function<esp_err_t()> mic_codec_new_func = []() -> esp_err_t
   audio_codec.SetMicrophoneCodecDeviceHandle(codec_dev_handle);
   return ESP_OK;
 };
+
 void M5StackCoreS3::Init()
 {
   esp_err_t err = ESP_OK;

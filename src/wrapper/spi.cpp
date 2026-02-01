@@ -1,4 +1,4 @@
-#include "wspi.hpp"
+#include "wrapper/spi.hpp"
 #include <cstring>
 
 // --- SpiBus ---

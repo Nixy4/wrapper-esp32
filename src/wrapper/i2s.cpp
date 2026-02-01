@@ -1,4 +1,4 @@
-#include "wi2s.hpp"
+#include "wrapper/i2s.hpp"
 
 using namespace wrapper;
 

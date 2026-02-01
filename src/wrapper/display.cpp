@@ -1,4 +1,4 @@
-#include "wdisplay.hpp"
+#include "wrapper/display.hpp"
 
 using namespace wrapper;
 // --- I2cLcd ---

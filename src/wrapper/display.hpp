@@ -4,8 +4,8 @@
 #include "esp_lcd_panel_ops.h"
 #include "esp_lcd_panel_dev.h"
 
-#include "wi2c.hpp"
-#include "wspi.hpp"
+#include "wrapper/i2c.hpp"
+#include "wrapper/spi.hpp"
 
 namespace wrapper
 {

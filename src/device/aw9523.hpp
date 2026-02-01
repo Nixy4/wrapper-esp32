@@ -1,8 +1,8 @@
 #pragma once
 
-#include "wrapper/ni2c.hpp"
+#include "wrapper/i2c.hpp"
 
-namespace nix
+namespace wrapper
 {
 
 class Aw9523 : public I2cDevice
@@ -15,4 +15,4 @@ public:
     ~Aw9523();
 };
 
-}
+} // namespace wrapper

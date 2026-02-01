@@ -3,9 +3,9 @@
 #include <functional>
 #include <esp_codec_dev.h>
 #include <esp_codec_dev_defaults.h>
-#include "wlogger.hpp"
-#include "wi2c.hpp"
-#include "wi2s.hpp"
+#include "wrapper/logger.hpp"
+#include "wrapper/i2c.hpp"
+#include "wrapper/i2s.hpp"
 
 namespace wrapper
 {

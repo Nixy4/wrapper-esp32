@@ -2,7 +2,7 @@
 #include "esp_err.h"
 #include "driver/i2s_std.h"
 #include "driver/i2s_tdm.h"
-#include "wlogger.hpp"
+#include "wrapper/logger.hpp"
 
 namespace wrapper
 {

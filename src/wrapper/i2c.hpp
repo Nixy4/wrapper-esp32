@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
 #include "driver/i2c_master.h"
-#include "wlogger.hpp"
+#include "wrapper/logger.hpp"
 
 namespace wrapper
 {
