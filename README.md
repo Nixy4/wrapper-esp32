@@ -1,4 +1,4 @@
-# nix-wrapper-esp32
+# wrapper-esp-idf
 
 这是一个对原有ESP-IDF组件, 以及ESP-Registry组件进行C++风格封装的组件, 也包含个人常用开发板的一些封装
 
