@@ -4,7 +4,10 @@
 #include "wrapper/i2c.hpp"
 #include "wrapper/display.hpp"
 
-class UnitExtio2 : public wrapper::I2cDevice
+namespace wrapper
+{
+
+class UnitExtio2 : public I2cDevice
 {
 
 
@@ -100,15 +103,15 @@ public:
     BITS12 = 1
   };
 
-  UnitExtio2(wrapper::Logger &logger) : I2cDevice(logger)
+  UnitExtio2(Logger &logger) : I2cDevice(logger)
   {
   }
 
   ~UnitExtio2() = default;
 
-  bool Init(const wrapper::I2cBus &bus)
+  bool Init(const I2cBus &bus)
   {
-    wrapper::I2cDeviceConfig cfg = wrapper::I2cDeviceConfig(I2C_ADDR_DEFAULT, I2C_SPEED_HZ);
+    I2cDeviceConfig cfg = I2cDeviceConfig(I2C_ADDR_DEFAULT, I2C_SPEED_HZ);
     return I2cDevice::Init(bus, cfg) == ESP_OK;
   }
 
@@ -160,3 +163,5 @@ public:
     return false;
   }
 };
+
+} // namespace wrapper

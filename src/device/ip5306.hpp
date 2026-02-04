@@ -1,7 +1,10 @@
 #pragma once
 #include "wrapper/i2c.hpp"
 
-class Ip5306 : public wrapper::I2cDevice
+namespace wrapper
+{
+
+class Ip5306 : public I2cDevice
 {
 public:
     static constexpr uint8_t I2C_ADDR_DEFAULT = 0x75;
@@ -36,15 +39,15 @@ public:
         V_4_2_4_305_4_35_4_395 = 0b11
     };
 
-    Ip5306(wrapper::Logger &logger) : I2cDevice(logger)
+    Ip5306(Logger &logger) : I2cDevice(logger)
     {
     }
 
     ~Ip5306() = default;
 
-    bool Init(const wrapper::I2cBus &bus)
+    bool Init(const I2cBus &bus)
     {
-        wrapper::I2cDeviceConfig cfg = wrapper::I2cDeviceConfig(I2C_ADDR_DEFAULT, I2C_SPEED_HZ);
+        I2cDeviceConfig cfg = I2cDeviceConfig(I2C_ADDR_DEFAULT, I2C_SPEED_HZ);
         return I2cDevice::Init(bus, cfg) == ESP_OK;
     }
 
@@ -98,3 +101,5 @@ public:
     }
 
 };
+
+} // namespace wrapper

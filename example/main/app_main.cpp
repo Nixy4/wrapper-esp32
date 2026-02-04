@@ -11,201 +11,26 @@
 
 using namespace wrapper;
 
-Logger logger_main("app_main");
 M5StackCoreS3 &m5 = M5StackCoreS3::GetInstance();
-
-Logger logger_unit("Extio2");
-
-class UnitExtio2 : public wrapper::I2cDevice
-{
-
-  static constexpr uint8_t I2C_ADDR_DEFAULT = 0x45;
-  static constexpr uint32_t I2C_SPEED_HZ = 400000;
-
-  enum Reg : uint8_t
-  {
-    MODE_BASE = 0x00,
-    MODE_IO0 = 0x00,
-    MODE_IO1,
-    MODE_IO2,
-    MODE_IO3,
-    MODE_IO4,
-    MODE_IO5,
-    MODE_IO6,
-    MODE_IO7,
-
-    OUTPUT_CTL_BASE = 0x10,
-    OUTPUT_CTL_IO0 = 0x10,
-    OUTPUT_CTL_IO1,
-    OUTPUT_CTL_IO2,
-    OUTPUT_CTL_IO3,
-    OUTPUT_CTL_IO4,
-    OUTPUT_CTL_IO5,
-    OUTPUT_CTL_IO6,
-    OUTPUT_CTL_IO7,
-    OUTPUTS_CTL = 0x18,
-
-    DIGITAL_INPUT_BASE = 0x20,
-    DIGITAL_INPUT_IO0 = 0x20,
-    DIGITAL_INPUT_IO1,
-    DIGITAL_INPUT_IO2,
-    DIGITAL_INPUT_IO3,
-    DIGITAL_INPUT_IO4,
-    DIGITAL_INPUT_IO5,
-    DIGITAL_INPUT_IO6,
-    DIGITAL_INPUT_IO7,
-    DIGITAL_INPUTS = 0x28,
-
-    ANALOG_INPUT_8B = 0x30,
-    ANALOG_INPUT_12B = 0x40,
-
-    SERVO_ANGLE_8B = 0x50,
-    SERVO_PULSE_16B = 0x60,
-
-    RGB_24B = 0x70,
-
-    FW_VERSION = 0xFE,
-    ADDRESS = 0xFF
-  };
-
-  constexpr static inline uint8_t REG_MODE_IO(uint8_t pin)
-  {
-    return static_cast<uint8_t>(Reg::MODE_BASE) + pin;
-  }
-
-  constexpr static inline uint8_t REG_OUTPUT_CTL_IO(uint8_t pin)
-  {
-    return static_cast<uint8_t>(Reg::OUTPUT_CTL_BASE) + pin;
-  }
-
-  constexpr static inline uint8_t REG_DIGITAL_INPUT_IO(uint8_t pin)
-  {
-    return static_cast<uint8_t>(Reg::DIGITAL_INPUT_BASE) + pin;
-  }
-
-  constexpr static inline uint8_t REG_ANALOG_INPUT_8B(uint8_t pin)
-  {
-    return static_cast<uint8_t>(Reg::ANALOG_INPUT_8B) + pin;
-  }
-
-  constexpr static inline uint8_t REG_ANALOG_INPUT_12B(uint8_t pin)
-  {
-    return static_cast<uint8_t>(Reg::ANALOG_INPUT_12B) + pin;
-  }
-
-public:
-  enum Mode : uint8_t
-  {
-    DIGITAL_INPUT = 0,
-    DIGITAL_OUTPUT,
-    ADC_INPUT,
-    SERVO_CTL,
-    RGB_LED
-  };
-
-  enum AnalogReadMode : uint8_t
-  {
-    BITS8 = 0,
-    BITS12 = 1
-  };
-
-  UnitExtio2(Logger &logger) : I2cDevice(logger)
-  {
-  }
-
-  ~UnitExtio2() = default;
-
-  bool Init(const I2cBus &bus)
-  {
-    I2cDeviceConfig cfg = I2cDeviceConfig(I2C_ADDR_DEFAULT, I2C_SPEED_HZ);
-    return I2cDevice::Init(bus, cfg) == ESP_OK;
-  }
-
-  void SetMode(int pin, Mode mode)
-  {
-    GetLogger().Info("SetMode Pin %d: %d", pin, static_cast<uint8_t>(mode));
-    WriteReg8(REG_MODE_IO(pin), static_cast<uint8_t>(mode), 1000);
-  }
-
-  Mode GetMode(int pin)
-  {
-    uint8_t mode = 0xFF;
-    if (ReadReg8(REG_MODE_IO(pin), mode, 1000) == ESP_OK)
-    {
-      return static_cast<Mode>(mode);
-    }
-    return static_cast<Mode>(0xFF);
-  }
-
-  void SetModeAll(Mode mode)
-  {
-    GetLogger().Info("SetMode All: %d", static_cast<uint8_t>(mode));
-    for (int pin = 0; pin < 8; pin++)
-    {
-      WriteReg8(REG_MODE_IO(pin), static_cast<uint8_t>(mode), 1000);
-    }
-  }
-
-  bool SetDigitalOutput(int pin, bool state)
-  {
-    GetLogger().Debug("SetDigitalOutput: %d", state ? 1 : 0);
-    return WriteReg8(REG_OUTPUT_CTL_IO(pin), state ? 1 : 0, 1000) == ESP_OK;
-  }
-
-  bool SetDigitalOutputs(uint8_t states)
-  {
-    GetLogger().Debug("SetDigitalOutputs: 0x%02X", states);
-    return WriteReg8(Reg::OUTPUTS_CTL, states, 1000) == ESP_OK;
-  }
-
-  bool GetDigitalInput(int pin)
-  {
-    uint8_t state = 0;
-    if (ReadReg8(REG_DIGITAL_INPUT_IO(pin), state, 1000) == ESP_OK)
-    {
-      GetLogger().Debug("GetDigitalInput Pin %d: %d", pin, state ? 1 : 0);
-      return state != 0;
-    }
-    return false;
-  }
-};
-
-I2cBusConfig i2c0_config = I2cBusConfig(
-    I2C_NUM_0,
-    GPIO_NUM_2, 
-    GPIO_NUM_1, 
-    I2C_CLK_SRC_DEFAULT,
-    7,  
-    1,  
-    0, 
-    true, 
-    false 
-);
-
-I2cBus i2c0(logger_main);
-UnitExtio2 extio2(logger_unit);
 
 static void board_init(void *arg)
 {
-  i2c0.Init(i2c0_config);
-  extio2.Init(i2c0);
-  extio2.SetModeAll(UnitExtio2::DIGITAL_INPUT);
-
-  for(;;)
-  {
-    std::string log_msg = "Digital Inputs: ";
-    for (int pin = 0; pin < 8; pin++)
-    {
-      bool state = extio2.GetDigitalInput(pin);
-      log_msg += "IO" + std::to_string(pin) + "[" + (state ? "1 " : "0 ") + "]";
-      vTaskDelay(pdMS_TO_TICKS(100));
-    }
-    logger_unit.Info("%s", log_msg.c_str());
-    vTaskDelay(pdMS_TO_TICKS(1000));
-  }
+  m5.InitBus(true, true, true);
+  m5.InitDevice(true, true, true, true);
+  m5.InitMiddleware(true);
+  m5.GetLvglPort().Test();
+  vTaskDelete(nullptr);
 }
 
 extern "C" void app_main()
 {
+  //nvs init
+  esp_err_t err = nvs_flash_init();
+  if (err == ESP_ERR_NVS_NO_FREE_PAGES || err == ESP_ERR_NVS_NEW_VERSION_FOUND) {
+      ESP_ERROR_CHECK(nvs_flash_erase());
+      err = nvs_flash_init();
+  }
+  ESP_ERROR_CHECK(err);
+
   xTaskCreate(board_init, "board_init", 8192, nullptr, 5, nullptr);
 };

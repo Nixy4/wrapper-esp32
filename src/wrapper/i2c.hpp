@@ -43,10 +43,12 @@ namespace wrapper
   public:
     I2cBus(Logger &logger);
     ~I2cBus();
-    Logger &GetLogger();
+    
     esp_err_t Init(const I2cBusConfig &config);
     esp_err_t Deinit();
     esp_err_t Reset();
+
+    Logger &GetLogger();
     i2c_master_bus_handle_t GetHandle() const;
     i2c_port_t GetPort() const;
 

@@ -5,7 +5,6 @@
 
 #include "wrapper/logger.hpp"
 #include "wrapper/soc.hpp"
-#include "wrapper/nvs.hpp"
 #include "wrapper/i2c.hpp"
 #include "wrapper/spi.hpp"
 #include "wrapper/i2s.hpp"
@@ -19,7 +18,8 @@
 
 #include "m5stack_core_s3.hpp"
 
-using namespace wrapper;
+namespace wrapper
+{
 
 I2sBusConfig bus_config(I2S_NUM_0, I2S_ROLE_MASTER, 6, 240, true, false, 0);
 
@@ -104,18 +104,34 @@ I2cTouchConfig ft5x06_config(
 );
 
 SpiLcdConfig spi_lcd_config(
+    // io_config parameters
     GPIO_NUM_3,                // cs_gpio
     GPIO_NUM_35,               // dc_gpio
-    40 * 1000 * 1000,          // clock_speed_hz (40MHz)
     2,                         // spi_mode
+    40 * 1000 * 1000,          // clock_speed_hz (40MHz)
     8,                         // lcd_cmd_bits
     8,                         // lcd_param_bits
+    10,                        // trans_queue_depth
+    nullptr,                   // on_color_trans_done
+    nullptr,                   // user_ctx
+    0,                         // cs_ena_pretrans
+    0,                         // cs_ena_posttrans
+    // io_config flags
+    0,                         // dc_high_on_cmd
+    0,                         // dc_low_on_data
+    0,                         // dc_low_on_param
+    0,                         // octal_mode
+    0,                         // quad_mode
+    0,                         // sio_mode
+    0,                         // lsb_first
+    0,                         // cs_high_active
+    // panel_config parameters
     GPIO_NUM_NC,               // reset_gpio
     LCD_RGB_ELEMENT_ORDER_BGR, // rgb_order
     LCD_RGB_DATA_ENDIAN_BIG,   // data_endian
     16,                        // bits_per_pixel
     false,                     // reset_active_high
-    NULL                       // vendor_conf
+    nullptr                    // vendor_conf
 );
 
 I2cDeviceConfig axp2101_config(Axp2101::DEFAULT_ADDR, Axp2101::DEFAULT_SPEED);
@@ -151,19 +167,17 @@ LvglDisplayConfig lvgl_display_config(
 
 LvglTouchConfig lvgl_touch_config(0.0f, 0.0f);
 
-Logger logger_nvs_ability("M5StackCoreS3", "nvs");
-Logger logger_i2c_bus1("M5StackCoreS3", "i2c", "bus");
-Logger logger_spi_bus("M5StackCoreS3", "spi", "bus");
-Logger logger_i2s_bus("M5StackCoreS3", "i2s", "bus");
+Logger logger_i2c_bus1("M5StackCoreS3", "I2C", "Bus");
+Logger logger_spi_bus("M5StackCoreS3", "SPI", "Bus");
+Logger logger_i2s_bus("M5StackCoreS3", "I2S", "Bus");
 
-Logger logger_axp2101("M5StackCoreS3", "i2c", "axp2101");
-Logger logger_aw9523("M5StackCoreS3", "i2c", "aw9523");
-Logger logger_ft5x06("M5StackCoreS3", "i2c", "ft5x06");
-Logger logger_ili9341("M5StackCoreS3", "spi", "ili9341");
-Logger logger_lvgl("M5StackCoreS3", "lvgl", "port");
-Logger logger_audio_codec("M5StackCoreS3", "audio", "codec");
+Logger logger_axp2101("M5StackCoreS3", "I2C", "PowerManager");
+Logger logger_aw9523("M5StackCoreS3", "I2C", "GpioExpander");
+Logger logger_ft5x06("M5StackCoreS3", "I2C", "Touch");
+Logger logger_ili9341("M5StackCoreS3", "SPI", "Display");
+Logger logger_lvgl("M5StackCoreS3", "LVGL", "Port");
+Logger logger_audio_codec("M5StackCoreS3", "Audio", "Codec");
 
-Nvs nvs_ability(logger_nvs_ability);
 I2cBus i2c_bus1(logger_i2c_bus1);
 SpiBus spi_bus(logger_spi_bus);
 I2sBus i2s_bus(logger_i2s_bus);
@@ -236,16 +250,6 @@ std::function<esp_err_t()> mic_codec_new_func = []() -> esp_err_t
   audio_codec.SetMicrophoneCodecDeviceHandle(codec_dev_handle);
   return ESP_OK;
 };
-
-bool M5StackCoreS3::InitSocAbility(bool nvs)
-{
-    esp_err_t err = ESP_OK;
-    if (nvs) {
-      err = nvs_ability.Init();
-      if (err != ESP_OK) return false;
-    }
-    return true;
-}
 
 bool M5StackCoreS3::InitBus(bool i2c1, bool spi, bool i2s)
 {
@@ -376,7 +380,6 @@ bool M5StackCoreS3::InitMiddleware(bool lvgl)
 bool M5StackCoreS3::Init()
 {
     if (initialized_) return true;
-    if (!InitSocAbility(true)) return false;
     if (!InitBus(true, true, true)) return false;
     if (!InitDevice(true, true, true, true)) return false;
     if (!InitMiddleware(true)) return false;
@@ -385,7 +388,39 @@ bool M5StackCoreS3::Init()
     return true;
 }
 
-wrapper::I2cBus& M5StackCoreS3::GetI2cBus1()
+I2cBus& M5StackCoreS3::GetI2cBus1()
 {
     return i2c_bus1;
 }
+
+SpiBus& M5StackCoreS3::GetSpiBus()
+{
+  return spi_bus;
+}
+
+I2sBus& M5StackCoreS3::GetI2sBus()
+{
+  return i2s_bus;
+}
+
+Axp2101& M5StackCoreS3::GetPowerManagement()
+{
+  return axp2101;
+}
+
+Aw9523& M5StackCoreS3::GetGpioExpander()
+{
+  return aw9523;
+}
+
+LvglPort& M5StackCoreS3::GetLvglPort()
+{
+  return lvgl_port;
+}
+
+AudioCodec& M5StackCoreS3::GetAudioCodec()
+{
+  return audio_codec;
+}
+
+} // namespace wrapper

@@ -66,41 +66,57 @@ namespace wrapper
     esp_lcd_panel_dev_config_t panel_config;
 
     SpiLcdConfig(
-        gpio_num_t cs_gpio,
-        gpio_num_t dc_gpio,
-        int clock_speed_hz,
+        // io_config parameters
+        int cs_gpio,
+        int dc_gpio,
         int spi_mode,
+        int clock_speed_hz,
         int lcd_cmd_bits,
         int lcd_param_bits,
-        gpio_num_t reset_gpio,
-        lcd_rgb_element_order_t rgb_order,
-        lcd_rgb_data_endian_t data_endian,
-        uint32_t bits_per_pixel,
-        bool reset_active_high,
-        void *vendor_conf) : io_config{}, panel_config{}
+        size_t trans_queue_depth = 10,
+        esp_lcd_panel_io_color_trans_done_cb_t on_color_trans_done = nullptr,
+        void *user_ctx = nullptr,
+        int cs_ena_pretrans = 0,
+        int cs_ena_posttrans = 0,
+        // io_config flags
+        unsigned int dc_high_on_cmd = 0,
+        unsigned int dc_low_on_data = 0,
+        unsigned int dc_low_on_param = 0,
+        unsigned int octal_mode = 0,
+        unsigned int quad_mode = 0,
+        unsigned int sio_mode = 0,
+        unsigned int lsb_first = 0,
+        unsigned int cs_high_active = 0,
+        // panel_config parameters
+        gpio_num_t reset_gpio = GPIO_NUM_NC,
+        lcd_rgb_element_order_t rgb_order = LCD_RGB_ELEMENT_ORDER_RGB,
+        lcd_rgb_data_endian_t data_endian = LCD_RGB_DATA_ENDIAN_BIG,
+        uint32_t bits_per_pixel = 16,
+        bool reset_active_high = false,
+        void *vendor_conf = nullptr) : io_config{}, panel_config{}
     {
       // Init io_config
       io_config.cs_gpio_num = cs_gpio;
       io_config.dc_gpio_num = dc_gpio;
       io_config.spi_mode = spi_mode;
       io_config.pclk_hz = clock_speed_hz;
-      io_config.trans_queue_depth = 10;
-      io_config.on_color_trans_done = NULL;
-      io_config.user_ctx = NULL;
+      io_config.trans_queue_depth = trans_queue_depth;
+      io_config.on_color_trans_done = on_color_trans_done;
+      io_config.user_ctx = user_ctx;
       io_config.lcd_cmd_bits = lcd_cmd_bits;
       io_config.lcd_param_bits = lcd_param_bits;
-      io_config.cs_ena_pretrans = 0;
-      io_config.cs_ena_posttrans = 0;
+      io_config.cs_ena_pretrans = cs_ena_pretrans;
+      io_config.cs_ena_posttrans = cs_ena_posttrans;
 
-      // Clear flags
-      io_config.flags.dc_high_on_cmd = 0;
-      io_config.flags.dc_low_on_data = 0;
-      io_config.flags.dc_low_on_param = 0;
-      io_config.flags.octal_mode = 0;
-      io_config.flags.quad_mode = 0;
-      io_config.flags.sio_mode = 0;
-      io_config.flags.lsb_first = 0;
-      io_config.flags.cs_high_active = 0;
+      // Init flags
+      io_config.flags.dc_high_on_cmd = dc_high_on_cmd;
+      io_config.flags.dc_low_on_data = dc_low_on_data;
+      io_config.flags.dc_low_on_param = dc_low_on_param;
+      io_config.flags.octal_mode = octal_mode;
+      io_config.flags.quad_mode = quad_mode;
+      io_config.flags.sio_mode = sio_mode;
+      io_config.flags.lsb_first = lsb_first;
+      io_config.flags.cs_high_active = cs_high_active;
 
       // Init panel_config
       panel_config.reset_gpio_num = reset_gpio;

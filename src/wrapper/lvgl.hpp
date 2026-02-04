@@ -169,8 +169,10 @@ public:
 
     /**
      * @brief Run a simple functional test to verify LVGL is working.
+     * 
+     * @param is_monochrome True if the display is monochrome.
      */
-    void Test();
+    void Test(bool is_monochrome = false);
 
     /**
      * @brief Set the display rotation.
@@ -178,7 +180,7 @@ public:
      * @param rotation The rotation angle in degrees.
      * @return true if successful.
      */
-    bool SetRotation(uint32_t rotation);
+    bool SetRotation(lv_display_rotation_t rotation);
 };
 
 } // namespace wrapper
