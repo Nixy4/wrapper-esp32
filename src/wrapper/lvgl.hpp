@@ -18,7 +18,7 @@ struct LvglPortConfig : public lvgl_port_cfg_t
                    int affinity,
                    int max_sleep_ms,
                    uint32_t stack_caps,
-                   uint32_t timer_ms)
+                   uint32_t timer_ms) : lvgl_port_cfg_t{}
     {
         task_priority = task_prio;
         task_stack = stack_sz;
@@ -49,7 +49,7 @@ struct LvglDisplayConfig : public lvgl_port_display_cfg_t
                       bool sw_rotate,
                       bool swap_bytes,
                       bool full_refresh,
-                      bool direct_mode)
+                      bool direct_mode) : lvgl_port_display_cfg_t{}
     {
         io_handle = NULL;
         panel_handle = NULL;
@@ -78,7 +78,7 @@ struct LvglDisplayConfig : public lvgl_port_display_cfg_t
  */
 struct LvglTouchConfig : public lvgl_port_touch_cfg_t
 {
-    LvglTouchConfig(float scale_x = 0.0f, float scale_y = 0.0f)
+    LvglTouchConfig(float scale_x = 0.0f, float scale_y = 0.0f) : lvgl_port_touch_cfg_t{}
     {
         disp = NULL;
         handle = NULL;

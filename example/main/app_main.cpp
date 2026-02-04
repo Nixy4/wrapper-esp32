@@ -8,16 +8,16 @@
 #include "wrapper/i2c.hpp"
 #include "wrapper/wifi.hpp"
 
-#include "board/m5stack/tab5.hpp"
+// #include "board/m5stack/tab5.hpp"
 
 using namespace wrapper;
 
-M5StackTab5& m5 = M5StackTab5::GetInstance();
+// M5StackTab5& m5 = M5StackTab5::GetInstance();
 
 static void board_init(void *arg)
 {
-  m5.Init();
-  m5.GetLvglPort().Test();
+  // m5.Init();
+  // m5.GetLvglPort().Test();
   vTaskDelete(nullptr);
 }
 

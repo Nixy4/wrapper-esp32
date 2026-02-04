@@ -86,13 +86,22 @@ I2cBusConfig i2c_bus1_config(
     false);
 
 SpiBusConfig spi_bus_config(
-    SPI3_HOST,
-    GPIO_NUM_37,
-    GPIO_NUM_NC,
-    GPIO_NUM_36,
-    320 * 240 * sizeof(uint16_t),
-    SPI_DMA_CH_AUTO,
-    SPICOMMON_BUSFLAG_MASTER);
+    SPI3_HOST,                      // host
+    GPIO_NUM_37,                    // mosi
+    GPIO_NUM_NC,                    // miso
+    GPIO_NUM_36,                    // sclk
+    GPIO_NUM_NC,                    // quadwp
+    GPIO_NUM_NC,                    // quadhd
+    GPIO_NUM_NC,                    // data4
+    GPIO_NUM_NC,                    // data5
+    GPIO_NUM_NC,                    // data6
+    GPIO_NUM_NC,                    // data7
+    false,                          // data_default_level
+    320 * 240 * sizeof(uint16_t),   // max_transfer
+    SPICOMMON_BUSFLAG_MASTER,       // bus_flags
+    ESP_INTR_CPU_AFFINITY_AUTO,     // isr_cpu
+    0,                              // intr_flags
+    SPI_DMA_CH_AUTO);               // dma
 
 I2cTouchConfig ft5x06_config(
     0x38,        // dev_addr
