@@ -46,7 +46,8 @@ esp_err_t I2cDisplay::InitIo(const esp_lcd_panel_io_i2c_config_t &config)
     return ESP_OK;
 }
 
-esp_err_t I2cDisplay::InitPanel(const esp_lcd_panel_dev_config_t &panel_config, CustomLcdPanelInitFunc custom_init_panel_func)
+esp_err_t I2cDisplay::InitPanel(const esp_lcd_panel_dev_config_t &panel_config, 
+      std::function<esp_err_t(const esp_lcd_panel_io_handle_t)> custom_init_panel_func)
 {
     if (m_io_handle == nullptr) {
         m_logger.Error("IO handle not initialized. Call Init first.");
@@ -154,7 +155,8 @@ esp_err_t SpiDisplay::InitIo(const esp_lcd_panel_io_spi_config_t &config)
     return ESP_OK;
 }
 
-esp_err_t SpiDisplay::InitPanel(const esp_lcd_panel_dev_config_t &panel_config, CustomLcdPanelInitFunc custom_init_panel_func)
+esp_err_t SpiDisplay::InitPanel(const esp_lcd_panel_dev_config_t &panel_config,
+      std::function<esp_err_t(const esp_lcd_panel_io_handle_t)> custom_init_panel_func)
 {
     if (m_io_handle == nullptr) {
         m_logger.Error("IO handle not initialized. Call Init first.");
