@@ -182,6 +182,9 @@ dependencies:
       rules:
       - if: target == esp32p4
       version: '*'
+    - name: espressif/esp_codec_dev
+      public: true
+      version: '*'
     source:
       path: /home/nix/ws/wrapper-esp32
       type: local

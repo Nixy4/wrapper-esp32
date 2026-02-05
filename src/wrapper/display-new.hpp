@@ -7,25 +7,21 @@
 #include "wrapper/logger.hpp"
 #include "wrapper/i2c.hpp"
 #include "wrapper/spi.hpp"
+#include "wrapper/display.hpp"
 
 namespace wrapper
 {
-  /**
-   * @brief LCD Display Base wrapper class
-   * 
-   * Combines panel IO and panel operations for complete display control
-   */
   class DisplayBase
   {
   protected:
-    esp_lcd_panel_io_handle_t m_io_handle;
-    esp_lcd_panel_handle_t m_panel_handle;
+    esp_lcd_panel_io_handle_t m_io_handle = nullptr;
+    esp_lcd_panel_handle_t m_panel_handle = nullptr;
 
   public:
     DisplayBase(esp_lcd_panel_io_handle_t io_handle, esp_lcd_panel_handle_t panel_handle) 
       : m_io_handle(io_handle), m_panel_handle(panel_handle) {}
     
-    virtual ~DisplayBase() = default;
+    ~DisplayBase() = default;
 
     // Panel IO operations
     esp_err_t IoTxParam(int lcd_cmd, const void *param, size_t param_size) {

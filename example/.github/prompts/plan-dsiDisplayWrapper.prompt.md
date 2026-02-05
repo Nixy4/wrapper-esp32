@@ -12,7 +12,7 @@
 
 2. **新建 [dsi.cpp](wrapper-esp32/src/wrapper/dsi.cpp)**：实现 `DsiBus::Init`（接受外部 LDO handle，调用 `esp_lcd_new_dsi_bus`）、`Deinit`（仅释放 bus，不释放 LDO）、`CreateDbiIo`（调用 `esp_lcd_new_panel_io_dbi`）
 
-3. **修改 [display.hpp](wrapper-esp32/src/wrapper/display.hpp)**：添加 `#include "wrapper/dsi.hpp"`，添加 `DsiLcdConfig` 结构体（含 `DsiDbiIoConfig dbi_io_config`、`DpiPanelConfig dpi_panel_config`、`esp_lcd_panel_dev_config_t panel_config`、`void* vendor_config`），声明 `Init(const DsiBus&, DsiLcdConfig&, LcdNewPanelFunc, CustomLcdPanelInitFunc)` 重载
+3. **修改 [display.hpp](wrapper-esp32/src/wrapper/display.hpp)**：添加 `#include "wrapper/dsi.hpp"`，添加 `DsiDisplayConfig` 结构体（含 `DsiDbiIoConfig dbi_io_config`、`DpiPanelConfig dpi_panel_config`、`esp_lcd_panel_dev_config_t panel_config`、`void* vendor_config`），声明 `Init(const DsiBus&, DsiDisplayConfig&, LcdNewPanelFunc, CustomLcdPanelInitFunc)` 重载
 
 4. **修改 [display.cpp](wrapper-esp32/src/wrapper/display.cpp)**：实现 DSI Init，调用 `bus.CreateDbiIo()` 获取 io_handle，设置 `config.panel_config.vendor_config = config.vendor_config`，调用 `LcdNewPanelFunc` 创建面板并存储 handle，不调用 `esp_lcd_panel_reset/init`
 

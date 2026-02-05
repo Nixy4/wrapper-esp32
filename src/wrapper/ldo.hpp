@@ -18,7 +18,6 @@ namespace wrapper
       this->voltage_mv = voltage_mv;
       this->flags.adjustable = adjustable ? 1U : 0U;
       this->flags.owned_by_hw = owned_by_hw ? 1U : 0U;
-      this->flags.bypass = 0U; // Deprecated
     }
   };
 

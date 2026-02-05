@@ -2,6 +2,9 @@
 
 // --- I2cDisplay ---
 
+namespace wrapper
+{
+
 esp_err_t I2cDisplay::Init(
       const I2cLcdConfig &config, 
       std::function<esp_err_t(const esp_lcd_panel_io_handle_t, const esp_lcd_panel_dev_config_t *, esp_lcd_panel_handle_t *)> new_panel_func, 
@@ -221,3 +224,5 @@ esp_err_t SpiDisplay::Deinit()
     
     return ret;
 }
+
+} // namespace wrapper

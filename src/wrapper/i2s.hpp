@@ -33,11 +33,14 @@ struct I2sBusConfig : public i2s_chan_config_t
 
 struct I2sChanStdConfig : public i2s_std_config_t
 {
-    I2sChanStdConfig( 
+    I2sChanStdConfig(
+        // i2s_std_clk_config_t
         uint32_t sample_rate_hz,
         i2s_clock_src_t clk_src,
         uint32_t ext_clk_freq_hz,
         i2s_mclk_multiple_t mclk_multiple,
+        uint32_t bclk_div,
+        // i2s_std_slot_config_t
         i2s_data_bit_width_t data_bit_width,
         i2s_slot_bit_width_t slot_bit_width,
         i2s_slot_mode_t slot_mode,
@@ -62,6 +65,7 @@ struct I2sChanStdConfig : public i2s_std_config_t
         clk_cfg.clk_src         = clk_src;
         clk_cfg.ext_clk_freq_hz = ext_clk_freq_hz;
         clk_cfg.mclk_multiple   = mclk_multiple;
+        clk_cfg.bclk_div        = bclk_div;
 
         slot_cfg.data_bit_width = data_bit_width;
         slot_cfg.slot_bit_width = slot_bit_width;
@@ -172,18 +176,5 @@ public:
     uint32_t GetTxSampleRate() const { return m_tx_sample_rate_hz; }
     uint32_t GetRxSampleRate() const { return m_rx_sample_rate_hz; }
 };
-
-class I2sDeviceOutput
-{
-  Logger& m_logger;
-  I2sBus& m_i2s_bus;
-  I2sChanStdConfig m_chan_config;
-public:
-  I2sDeviceOutput(Logger& logger, I2sBus& i2s_bus, const I2sChanStdConfig& chan_config)
-    : m_logger(logger), m_i2s_bus(i2s_bus), m_chan_config(chan_config)
-  {
-  }
-};
-
 
 }; // namespace wrapper

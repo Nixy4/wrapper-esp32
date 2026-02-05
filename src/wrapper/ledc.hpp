@@ -1,0 +1,95 @@
+#pragma once
+#include "driver/ledc.h"
+#include "wrapper/logger.hpp"
+
+namespace wrapper
+{
+  struct LedcTimerConfig : public ledc_timer_config_t
+  {
+    LedcTimerConfig(
+        ledc_mode_t speed_mode,
+        ledc_timer_bit_t duty_resolution,
+        ledc_timer_t timer_num,
+        uint32_t freq_hz,
+        ledc_clk_cfg_t clk_cfg,
+        bool deconfigure = false
+    ) : ledc_timer_config_t{}
+    {
+      this->speed_mode = speed_mode;
+      this->duty_resolution = duty_resolution;
+      this->timer_num = timer_num;
+      this->freq_hz = freq_hz;
+      this->clk_cfg = clk_cfg;
+      this->deconfigure = deconfigure;
+    }
+  };
+
+  struct LedcChannelConfig : public ledc_channel_config_t
+  {
+    LedcChannelConfig(
+        gpio_num_t gpio_num,
+        ledc_mode_t speed_mode,
+        ledc_channel_t channel,
+        ledc_intr_type_t intr_type,
+        ledc_timer_t timer_sel,
+        uint32_t duty,
+        int hpoint
+    ) : ledc_channel_config_t{}
+    {
+      this->gpio_num = gpio_num;
+      this->speed_mode = speed_mode;
+      this->channel = channel;
+      this->intr_type = intr_type;
+      this->timer_sel = timer_sel;
+      this->duty = duty;
+      this->hpoint = hpoint;
+    }
+  };
+
+  class LedcTimer
+  {
+  private:
+    Logger &m_logger;
+    ledc_mode_t m_speed_mode;
+    ledc_timer_t m_timer_num;
+    bool m_initialized;
+
+  public:
+    LedcTimer(Logger &logger);
+    ~LedcTimer();
+
+    esp_err_t Init(const LedcTimerConfig &config);
+    esp_err_t Deinit();
+    esp_err_t Pause();
+    esp_err_t Resume();
+    esp_err_t SetFreq(uint32_t freq_hz);
+
+    ledc_mode_t GetSpeedMode() const { return m_speed_mode; }
+    ledc_timer_t GetTimerNum() const { return m_timer_num; }
+    bool IsInitialized() const { return m_initialized; }
+  };
+
+  class LedcChannel
+  {
+  private:
+    Logger &m_logger;
+    ledc_mode_t m_speed_mode;
+    ledc_channel_t m_channel;
+    bool m_initialized;
+
+  public:
+    LedcChannel(Logger &logger);
+    ~LedcChannel();
+
+    esp_err_t Init(const LedcChannelConfig &config);
+    esp_err_t Deinit();
+    esp_err_t SetDuty(uint32_t duty);
+    esp_err_t SetDutyAndUpdate(uint32_t duty);
+    esp_err_t UpdateDuty();
+    esp_err_t Stop(uint32_t idle_level);
+
+    ledc_mode_t GetSpeedMode() const { return m_speed_mode; }
+    ledc_channel_t GetChannel() const { return m_channel; }
+    bool IsInitialized() const { return m_initialized; }
+  };
+}

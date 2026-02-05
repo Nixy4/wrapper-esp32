@@ -8,7 +8,7 @@
 #include "wrapper/i2c.hpp"
 #include "wrapper/spi.hpp"
 #include "wrapper/i2s.hpp"
-#include "wrapper/display.hpp"
+#include "wrapper/display-new.hpp"
 #include "wrapper/touch.hpp"
 #include "wrapper/lvgl.hpp"
 #include "wrapper/audio.hpp"
@@ -16,7 +16,7 @@
 #include "device/axp2101.hpp"
 #include "device/aw9523.hpp"
 
-#include "board/m5stack/core_s3.hpp"
+#include "board/m5stack/core-s3.hpp"
 
 namespace wrapper
 {
@@ -24,28 +24,32 @@ namespace wrapper
 I2sBusConfig bus_config(I2S_NUM_0, I2S_ROLE_MASTER, 6, 240, true, false, 0);
 
 I2sChanStdConfig tx_config(
-    16000,
-    I2S_CLK_SRC_DEFAULT,
-    0,
-    I2S_MCLK_MULTIPLE_256,
-    I2S_DATA_BIT_WIDTH_16BIT,
-    I2S_SLOT_BIT_WIDTH_AUTO,
-    I2S_SLOT_MODE_STEREO,
-    I2S_STD_SLOT_BOTH,
-    I2S_DATA_BIT_WIDTH_16BIT,
-    false,
-    true,
-    true,
-    false,
-    false,
-    GPIO_NUM_0,
-    GPIO_NUM_34,
-    GPIO_NUM_33,
-    GPIO_NUM_13,
-    GPIO_NUM_NC,
-    false,
-    false,
-    false);
+    // clk_cfg
+    16000,                    // sample_rate_hz
+    I2S_CLK_SRC_DEFAULT,      // clk_src
+    0,                        // ext_clk_freq_hz
+    I2S_MCLK_MULTIPLE_256,    // mclk_multiple
+    1,                        // bclk_div
+    // slot_cfg
+    I2S_DATA_BIT_WIDTH_16BIT, // data_bit_width
+    I2S_SLOT_BIT_WIDTH_AUTO,  // slot_bit_width
+    I2S_SLOT_MODE_STEREO,     // slot_mode
+    I2S_STD_SLOT_BOTH,        // slot_mask
+    I2S_DATA_BIT_WIDTH_16BIT, // ws_width
+    false,                    // ws_pol
+    true,                     // bit_shift
+    true,                     // left_align
+    false,                    // big_endian
+    false,                    // bit_order_lsb
+    // gpio_cfg
+    GPIO_NUM_0,               // mclk
+    GPIO_NUM_34,              // bclk
+    GPIO_NUM_33,              // ws
+    GPIO_NUM_13,              // dout
+    GPIO_NUM_NC,              // din
+    false,                    // mclk_inv
+    false,                    // bclk_inv
+    false);                   // ws_inv
 
 I2SChanTdmConfig rx_config(
     16000,
@@ -104,12 +108,29 @@ SpiBusConfig spi_bus_config(
     SPI_DMA_CH_AUTO);               // dma
 
 I2cTouchConfig ft5x06_config(
-    0x38,        // dev_addr
-    400000,      // scl_speed_hz (400kHz)
-    320,         // x_max
-    240,         // y_max
-    GPIO_NUM_NC, // rst_gpio
-    GPIO_NUM_NC  // int_gpio
+    // io_config parameters
+    0x38,                   // dev_addr
+    nullptr,                // on_color_trans_done
+    nullptr,                // user_ctx
+    1,                      // control_phase_bytes
+    6,                      // dc_bit_offset
+    8,                      // lcd_cmd_bits
+    8,                      // lcd_param_bits
+    0,                      // dc_low_on_data
+    0,                      // disable_control_phase
+    400000,                 // scl_speed_hz (400kHz)
+    // touch_config parameters
+    320,                    // x_max
+    240,                    // y_max
+    GPIO_NUM_NC,            // rst_gpio_num
+    GPIO_NUM_NC,            // int_gpio_num
+    0,                      // levels.reset
+    0,                      // levels.interrupt
+    0,                      // flags.swap_xy
+    0,                      // flags.mirror_x
+    0,                      // flags.mirror_y
+    nullptr,                // process_coordinates
+    nullptr                 // interrupt_callback
 );
 
 SpiLcdConfig spi_lcd_config(
@@ -162,10 +183,10 @@ LvglDisplayConfig lvgl_display_config(
     320,                    // hres
     240,                    // vres
     false,                  // monochrome
-    LV_COLOR_FORMAT_RGB565, // color_format
     false,                  // swap_xy
     false,                  // mirror_x
     false,                  // mirror_y
+    LV_COLOR_FORMAT_RGB565, // color_format
     true,                   // buff_dma
     true,                   // buff_spiram
     false,                  // sw_rotate
@@ -194,7 +215,7 @@ I2sBus i2s_bus(logger_i2s_bus);
 Axp2101 axp2101(logger_axp2101);
 Aw9523 aw9523(logger_aw9523);
 I2cTouch ft5x06(logger_ft5x06);
-Display ili9341(logger_ili9341);
+SpiDisplay ili9341(logger_ili9341, spi_bus);
 LvglPort lvgl_port(logger_lvgl);
 
 AudioCodec audio_codec(logger_audio_codec);
@@ -345,7 +366,7 @@ bool M5StackCoreS3::InitDevice(bool power, bool audio, bool display, bool touch)
   }
 
   if (display) {
-      err = ili9341.Init(spi_bus, spi_lcd_config, esp_lcd_new_panel_ili9341);
+      err = ili9341.Init(spi_lcd_config, esp_lcd_new_panel_ili9341);
       if (err != ESP_OK) return false;
   }
 

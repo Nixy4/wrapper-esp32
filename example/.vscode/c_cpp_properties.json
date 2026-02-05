@@ -2,30 +2,19 @@
   "configurations": [
     {
       "name": "ESP-IDF",
-      "compilerPath": "${env:HOME}/.espressif/tools/xtensa-esp-elf/esp-14.2.0_20241119/xtensa-esp-elf/bin/xtensa-esp32-elf-gcc",
-      "compileCommands": "${workspaceFolder}/build/compile_commands.json",
+      "compilerPath": "/home/nix/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20241119/riscv32-esp-elf/bin/riscv32-esp-elf-gcc",
+      "compileCommands": "${config:idf.buildPath}/compile_commands.json",
       "includePath": [
-        "${env:IDF_PATH}/components/**",
-        "${env:IDF_PATH}/components/**/**",
-        "${workspaceFolder}/main",
+        "${workspaceFolder}/**",
         "${workspaceFolder}/build/config",
-        "${workspaceFolder}/managed_components/**",
-        "${workspaceFolder}/managed_components/**/include",
-        "${workspaceFolder}/../src"
+        "${workspaceFolder}/wrapper-esp32/src"
       ],
       "browse": {
         "path": [
-          "${env:IDF_PATH}/components",
-          "${env:IDF_PATH}/components/**/**",
-          "${workspaceFolder}/managed_components/**",
-          "${workspaceFolder}/main",
-          "${workspaceFolder}/../src/**"
+          "${workspaceFolder}"
         ],
         "limitSymbolsToIncludedHeaders": true
-      },
-      "cStandard": "c17",
-      "cppStandard": "c++17",
-      "intelliSenseMode": "linux-gcc-x64"
+      }
     }
   ],
   "version": 4
