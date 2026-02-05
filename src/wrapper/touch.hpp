@@ -81,9 +81,9 @@ namespace wrapper
 
     class I2cTouch
     {
-        Logger& m_logger;
-        esp_lcd_panel_io_handle_t m_io_handle;
-        esp_lcd_touch_handle_t m_touch_handle;
+        Logger& logger_;
+        esp_lcd_panel_io_handle_t io_handle_;
+        esp_lcd_touch_handle_t touch_handle_;
       public:
         I2cTouch(Logger& logger);
         ~I2cTouch();
@@ -98,7 +98,7 @@ namespace wrapper
         esp_err_t ReadData();
         esp_err_t GetData(esp_lcd_touch_point_data_t *data, uint8_t *point_cnt, uint8_t max_point_cnt);
         bool GetCoordinates(uint16_t *x, uint16_t *y, uint16_t *strength, uint8_t *point_num, uint8_t max_point_num);
-        esp_lcd_touch_handle_t GetHandle() const { return m_touch_handle; }
+        esp_lcd_touch_handle_t GetHandle() const { return touch_handle_; }
     };
 
 } // namespace wrapper

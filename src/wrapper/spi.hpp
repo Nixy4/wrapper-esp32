@@ -57,10 +57,10 @@ struct SpiBusConfig : public spi_bus_config_t
 
 class SpiBus
 {
-    Logger& m_logger;
-    spi_host_device_t m_host_id;
-    bool m_initialized;
-    SpiBusConfig m_config;
+    Logger& logger_;
+    spi_host_device_t host_id_;
+    bool initialized_;
+    SpiBusConfig config_;
 
 public:
     SpiBus(Logger& logger);
@@ -97,8 +97,8 @@ struct SpiDeviceConfig : public spi_device_interface_config_t
 class SpiDevice
 {
 protected:
-    Logger& m_logger;
-    spi_device_handle_t m_dev_handle;
+    Logger& logger_;
+    spi_device_handle_t dev_handle_;
 
 public:
     SpiDevice(Logger& logger);
