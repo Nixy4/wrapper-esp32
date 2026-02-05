@@ -1,0 +1,72 @@
+#!/bin/bash
+
+# 切换 ESP32 板级配置脚本
+# 用法: ./chboard [cs3|t5]
+
+if [ -z "$1" ]; then
+    echo "错误: 请指定板级配置"
+    echo "用法: $0 [cs3|t5]"
+    echo "  cs3 - 切换到 M5Stack Core S3 配置"
+    echo "  t5  - 切换到 M5Stack Tab5 配置"
+    exit 1
+fi
+
+BOARD="$1"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SDKCONFIG="$SCRIPT_DIR/sdkconfig"
+CRBOARD_FILE="$SCRIPT_DIR/crboard"
+
+case "$BOARD" in
+    cs3)
+        SOURCE_CONFIG="$SCRIPT_DIR/sdkconfig-m5cs3"
+        BOARD_NAME="M5Stack Core S3"
+        ;;
+    t5)
+        SOURCE_CONFIG="$SCRIPT_DIR/sdkconfig-m5t5"
+        BOARD_NAME="M5Stack Tab5"
+        ;;
+    *)
+        echo "错误: 未知的板级配置 '$BOARD'"
+        echo "支持的选项: cs3, t5"
+        exit 1
+        ;;
+esac
+
+if [ ! -f "$SOURCE_CONFIG" ]; then
+    echo "错误: 配置文件 '$SOURCE_CONFIG' 不存在"
+    exit 1
+fi
+
+# 如果存在 crboard 文件，先保存当前 sdkconfig 到之前的配置文件
+if [ -f "$CRBOARD_FILE" ] && [ -f "$SDKCONFIG" ]; then
+    CURRENT_BOARD=$(cat "$CRBOARD_FILE")
+    case "$CURRENT_BOARD" in
+        cs3)
+            CURRENT_CONFIG="$SCRIPT_DIR/sdkconfig-m5cs3"
+            CURRENT_BOARD_NAME="M5Stack Core S3"
+            ;;
+        t5)
+            CURRENT_CONFIG="$SCRIPT_DIR/sdkconfig-m5t5"
+            CURRENT_BOARD_NAME="M5Stack Tab5"
+            ;;
+        *)
+            CURRENT_CONFIG=""
+            ;;
+    esac
+    
+    if [ -n "$CURRENT_CONFIG" ]; then
+        echo "保存当前配置到 $CURRENT_CONFIG..."
+        cp "$SDKCONFIG" "$CURRENT_CONFIG"
+        echo "✓ 已保存 $CURRENT_BOARD_NAME 配置"
+    fi
+fi
+
+# 复制新配置
+echo "切换到 $BOARD_NAME 配置..."
+cp "$SOURCE_CONFIG" "$SDKCONFIG"
+
+# 记录当前使用的开发板
+echo "$BOARD" > "$CRBOARD_FILE"
+
+echo "✓ 已成功切换到 $BOARD_NAME 配置"
+echo "提示: 运行 'idf.py build' 重新构建项目"
