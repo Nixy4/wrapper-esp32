@@ -16,7 +16,7 @@
 #include "device/axp2101.hpp"
 #include "device/aw9523.hpp"
 
-#include "m5stack_core_s3.hpp"
+#include "board/m5stack/core_s3.hpp"
 
 namespace wrapper
 {
@@ -86,13 +86,22 @@ I2cBusConfig i2c_bus1_config(
     false);
 
 SpiBusConfig spi_bus_config(
-    SPI3_HOST,
-    GPIO_NUM_37,
-    GPIO_NUM_NC,
-    GPIO_NUM_36,
-    320 * 240 * sizeof(uint16_t),
-    SPI_DMA_CH_AUTO,
-    SPICOMMON_BUSFLAG_MASTER);
+    SPI3_HOST,                      // host
+    GPIO_NUM_37,                    // mosi
+    GPIO_NUM_NC,                    // miso
+    GPIO_NUM_36,                    // sclk
+    GPIO_NUM_NC,                    // quadwp
+    GPIO_NUM_NC,                    // quadhd
+    GPIO_NUM_NC,                    // data4
+    GPIO_NUM_NC,                    // data5
+    GPIO_NUM_NC,                    // data6
+    GPIO_NUM_NC,                    // data7
+    false,                          // data_default_level
+    320 * 240 * sizeof(uint16_t),   // max_transfer
+    SPICOMMON_BUSFLAG_MASTER,       // bus_flags
+    ESP_INTR_CPU_AFFINITY_AUTO,     // isr_cpu
+    0,                              // intr_flags
+    SPI_DMA_CH_AUTO);               // dma
 
 I2cTouchConfig ft5x06_config(
     0x38,        // dev_addr
@@ -140,7 +149,7 @@ I2cDeviceConfig aw9523_config(Aw9523::DEFAULT_ADDR, Aw9523::DEFAULT_SPEED);
 LvglPortConfig lvgl_port_config(
     5,                                   // task_priority
     8192,                                // task_stack
-    APP_CPU_NUM,                         // task_affinity
+    1,                                   // task_affinity
     500,                                 // task_max_sleep_ms
     MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT, // task_stack_caps
     20                                   // timer_period_ms

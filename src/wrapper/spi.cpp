@@ -6,7 +6,22 @@
 using namespace wrapper;
 
 SpiBus::SpiBus(Logger& logger) : m_logger(logger), m_host_id(SPI2_HOST), m_initialized(false), 
-    m_config(SPI2_HOST, GPIO_NUM_NC, GPIO_NUM_NC, GPIO_NUM_NC, 4092, SPI_DMA_CH_AUTO, SPICOMMON_BUSFLAG_MASTER) {
+    m_config(SPI2_HOST,                   // host
+             GPIO_NUM_NC,                 // mosi
+             GPIO_NUM_NC,                 // miso
+             GPIO_NUM_NC,                 // sclk
+             GPIO_NUM_NC,                 // quadwp
+             GPIO_NUM_NC,                 // quadhd
+             GPIO_NUM_NC,                 // data4
+             GPIO_NUM_NC,                 // data5
+             GPIO_NUM_NC,                 // data6
+             GPIO_NUM_NC,                 // data7
+             false,                       // data_default_level
+             4092,                        // max_transfer
+             SPICOMMON_BUSFLAG_MASTER,    // bus_flags
+             ESP_INTR_CPU_AFFINITY_AUTO,  // isr_cpu
+             0,                           // intr_flags
+             SPI_DMA_CH_AUTO) {           // dma
 }
 
 SpiBus::~SpiBus() {

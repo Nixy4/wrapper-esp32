@@ -19,27 +19,36 @@ struct SpiBusConfig : public spi_bus_config_t
     spi_dma_chan_t dma_chan;
 
     SpiBusConfig(spi_host_device_t host,
-                        gpio_num_t mosi,
-                        gpio_num_t miso,
-                        gpio_num_t sclk,
-                        int max_transfer,
-                        spi_dma_chan_t dma,
-                        uint32_t bus_flags)
+                 int mosi,
+                 int miso,
+                 int sclk,
+                 int quadwp,
+                 int quadhd,
+                 int data4,
+                 int data5,
+                 int data6,
+                 int data7,
+                 bool data_default_level,
+                 int max_transfer,
+                 uint32_t bus_flags,
+                 esp_intr_cpu_affinity_t isr_cpu,
+                 int intr_flag,
+                 spi_dma_chan_t dma) : spi_bus_config_t{}
     {
         mosi_io_num = mosi;
         miso_io_num = miso;
         sclk_io_num = sclk;
-        quadwp_io_num = GPIO_NUM_NC;
-        quadhd_io_num = GPIO_NUM_NC;
-        data4_io_num = GPIO_NUM_NC;
-        data5_io_num = GPIO_NUM_NC;
-        data6_io_num = GPIO_NUM_NC;
-        data7_io_num = GPIO_NUM_NC;
+        quadwp_io_num = quadwp;
+        quadhd_io_num = quadhd;
+        data4_io_num = data4;
+        data5_io_num = data5;
+        data6_io_num = data6;
+        data7_io_num = data7;
+        data_io_default_level = data_default_level;
         max_transfer_sz = max_transfer;
         flags = bus_flags;
-        intr_flags = 0;
-        data_io_default_level = false;
-        isr_cpu_id = ESP_INTR_CPU_AFFINITY_AUTO;
+        isr_cpu_id = isr_cpu;
+        intr_flags = intr_flag;
 
         host_id = host;
         dma_chan = dma;
@@ -66,7 +75,7 @@ public:
 
 struct SpiDeviceConfig : public spi_device_interface_config_t
 {
-    SpiDeviceConfig(gpio_num_t cs, int clock_speed_hz, uint8_t mode)
+    SpiDeviceConfig(gpio_num_t cs, int clock_speed_hz, uint8_t mode) : spi_device_interface_config_t{}
     {
         command_bits = 0;
         address_bits = 0;
