@@ -7,6 +7,8 @@
 #include "service.hpp"
 #include "freertps.hpp"
 
+#include "sdkconfig.h"
+
 #if CONFIG_WRAPPER_ESP32_BOARD_M5STACK_CORE_S3
 #include "board/m5stack/core-s3.hpp"
 using namespace wrapper;
