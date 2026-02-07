@@ -157,7 +157,7 @@ I2sChanPdmRxConfig i2s_mic_chan_cfg(
 */
 
 #include "keyboard.h"
-KEYBOARD::Keyboard keyboard;
+Keyboard keyboard;
 
 /*
 // SD Card (No wrapper found yet)
@@ -185,7 +185,6 @@ Microphone mic(logger_mic);
 
 void board_init(void *arg)
 {
-  keyboard.init();
   i2c_bus.Init(i2c_bus_config);//pass
   spi_bus.Init(spi_bus_config);//pass
   display.Init(spi_display_config, esp_lcd_new_panel_st7789);//pass
@@ -193,7 +192,15 @@ void board_init(void *arg)
   i2s_bus.ConfigureTxChannel(i2s_speaker_chan_cfg);//pass
   i2s_bus.ConfigureRxChannel(i2s_mic_chan_cfg);//pass
 
+  // 5. Keyboard Init (Cardputer Matrix)
+    KeyboardConfig keyboard_config;
+    keyboard_config.input_pins = {13, 15, 3, 4, 5, 6, 7};
+    keyboard_config.output_pins = {8, 9, 11};
+    keyboard.Init(keyboard_config);
+    logger_display.Info("Keyboard Initialized");
 
+    // Simple Test Loop
+  // ... logic to read keys and print to log ...
 
   vTaskDelete(nullptr);
 }
