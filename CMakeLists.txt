@@ -31,7 +31,6 @@ if(IDF_TARGET STREQUAL "esp32s3")
     list(APPEND SOURCES "src/board/m5stack/cardputer.cpp")
   endif()
 elseif(IDF_TARGET STREQUAL "esp32p4")
-    # Add DSI display support for ESP32P4
     list(APPEND SOURCES "src/wrapper/display-dsi.cpp")
     list(APPEND SOURCES "src/device/ili9881c.cpp")
   if( CONFIG_WRAPPER_ESP32_BOARD_M5STACK_TAB5 )
