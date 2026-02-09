@@ -196,7 +196,7 @@ dependencies:
       public: true
       version: '*'
     source:
-      path: /home/nixy/ws/wrapper-esp32
+      path: /home/nix/ws/wrapper-esp32
       type: local
     targets:
     - esp32s3
@@ -205,6 +205,6 @@ dependencies:
 direct_dependencies:
 - jbrilha/esp_lcd_st7789
 - wrapper-esp32
-manifest_hash: 8b0279a9de62c3fcf876a120e888a46cc922161028cc8b33024fb55bd1fec0f7
+manifest_hash: 817ad1705aa959e345e932497b933c804cd65c3113f2972b4e9172d92f4fb727
 target: esp32s3
 version: 2.0.0

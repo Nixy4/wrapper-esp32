@@ -26,6 +26,7 @@ bool I2cDisplay::InitPanel(const esp_lcd_panel_dev_config_t &panel_config, std::
             logger_.Error("Failed to custom init panel: %s", esp_err_to_name(ret));
             return false;
         }
+        logger_.Info("Custom panel initialization completed successfully");
     }
 
     esp_err_t ret = esp_lcd_panel_reset(panel_handle_);
@@ -42,6 +43,7 @@ bool I2cDisplay::InitPanel(const esp_lcd_panel_dev_config_t &panel_config, std::
         return false;
     }
 
+    logger_.Info("Display panel initialized successfully");
     return true;
 }
 
