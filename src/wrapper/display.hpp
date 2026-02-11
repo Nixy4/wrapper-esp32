@@ -136,7 +136,7 @@ namespace wrapper
   public:
     DisplayBase(esp_lcd_panel_io_handle_t io_handle, esp_lcd_panel_handle_t panel_handle, Logger &logger) 
       : io_handle_(io_handle), panel_handle_(panel_handle), logger_(logger) {}
-    
+    DisplayBase(Logger &logger) : io_handle_(nullptr), panel_handle_(nullptr), logger_(logger) {}
     ~DisplayBase() = default;
 
     Logger& GetLogger() { return logger_; }

@@ -5,7 +5,9 @@ namespace wrapper
 
 // --- DsiBus ---
 
-DsiBus::DsiBus(Logger& logger) : logger_(logger), bus_handle_(nullptr) {}
+DsiBus::DsiBus(Logger& logger) : logger_(logger) {
+    
+}
 
 DsiBus::~DsiBus() {
   Deinit();
