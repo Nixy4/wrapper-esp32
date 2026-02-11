@@ -2,7 +2,7 @@
 #include "wrapper/display-dsi.hpp"
 #include "esp_lcd_ili9881c.h"
 
-namespace wrapper {
+namespace WrapperEsp32 {
 
 class Ili9881c : public DsiDisplay {
 private:
@@ -14,4 +14,4 @@ public:
     bool Init(DsiBus& bus, DsiDisplayConfig& config);
 };
 
-} // namespace wrapper
+} // namespace WrapperEsp32

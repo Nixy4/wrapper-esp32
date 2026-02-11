@@ -13,7 +13,7 @@
 #include "wrapper/audio.hpp"
 #include "device/m5stack_cardputer_keyboard.hpp"
 
-namespace wrapper
+namespace WrapperEsp32
 {
 
 // SPI Bus Config
@@ -162,6 +162,6 @@ bool M5StackCardputer::Init()
   return true;
 }
 
-} // namespace wrapper
+} // namespace WrapperEsp32
 
 #endif

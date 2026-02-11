@@ -3,7 +3,7 @@
 #include "esp_ldo_regulator.h"
 #include "logger.hpp"
 
-namespace wrapper
+namespace WrapperEsp32
 {
   struct LdoChannelConfig : public esp_ldo_channel_config_t
   {

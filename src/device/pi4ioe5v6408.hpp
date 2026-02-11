@@ -6,7 +6,7 @@
 #include "esp_io_expander_pi4ioe5v6408.h"
 #include "wrapper/i2c.hpp"
 
-namespace wrapper
+namespace WrapperEsp32
 {
 
 /**
@@ -41,6 +41,6 @@ public:
     bool PrintState();
 };
 
-} // namespace wrapper
+} // namespace WrapperEsp32
 
 #endif // __has_include("esp_io_expander.h")

@@ -3,7 +3,7 @@
 #include "esp_wifi.h"
 #include "wrapper/soc.hpp"
 
-using namespace wrapper;
+using namespace WrapperEsp32;
 
 // Nvs Implementation
 

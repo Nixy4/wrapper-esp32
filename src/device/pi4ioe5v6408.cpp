@@ -2,7 +2,7 @@
 
 #if __has_include("esp_io_expander.h")
 
-namespace wrapper
+namespace WrapperEsp32
 {
 
 Pi4ioe5v6408::Pi4ioe5v6408(Logger &logger) : m_logger(logger)
@@ -151,6 +151,6 @@ bool Pi4ioe5v6408::PrintState()
     return esp_io_expander_print_state(m_handle) == ESP_OK;
 }
 
-} // namespace wrapper
+} // namespace WrapperEsp32
 
 #endif // __has_include("esp_io_expander.h")

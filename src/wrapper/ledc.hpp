@@ -2,7 +2,7 @@
 #include "driver/ledc.h"
 #include "wrapper/logger.hpp"
 
-namespace wrapper
+namespace WrapperEsp32
 {
   struct LedcTimerConfig : public ledc_timer_config_t
   {

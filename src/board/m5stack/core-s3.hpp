@@ -12,7 +12,7 @@
 #include "device/axp2101.hpp"
 #include "device/aw9523.hpp"
 
-namespace wrapper
+namespace WrapperEsp32
 {
 
 class M5StackCoreS3 
@@ -49,4 +49,4 @@ public:
   AudioCodec& GetAudioCodec();
 };
 
-} // namespace wrapper
+} // namespace WrapperEsp32

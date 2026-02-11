@@ -1,6 +1,6 @@
 #include "wrapper/display.hpp"
 
-using namespace wrapper;
+using namespace WrapperEsp32;
 
 bool I2cDisplay::InitIo(const esp_lcd_panel_io_i2c_config_t &config)
 {

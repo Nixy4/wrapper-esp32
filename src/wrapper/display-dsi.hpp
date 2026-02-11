@@ -6,7 +6,7 @@
 #include "wrapper/display.hpp"
 #include <functional>
 
-namespace wrapper
+namespace WrapperEsp32
 {
   // MIPI DSI Bus Configuration
   struct DsiBusConfig : public esp_lcd_dsi_bus_config_t

@@ -1,6 +1,6 @@
 #include "wrapper/ledc.hpp"
 
-namespace wrapper
+namespace WrapperEsp32
 {
 
 // --- LedcTimer ---
@@ -241,4 +241,4 @@ bool LedcChannel::Stop(uint32_t idle_level)
     return true;
 }
 
-} // namespace wrapper
+} // namespace WrapperEsp32

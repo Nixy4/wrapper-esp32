@@ -2,7 +2,7 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 
-using namespace wrapper;
+using namespace WrapperEsp32;
 
 LvglPort::LvglPort(Logger& logger) 
     : logger_(logger), 

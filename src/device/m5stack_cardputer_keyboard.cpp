@@ -2,7 +2,7 @@
 #include <driver/gpio.h>
 #include <cstring>
 
-namespace wrapper
+namespace WrapperEsp32
 {
 
   const KeyChart Keyboard::kXMapChart[7] =
@@ -345,4 +345,4 @@ namespace wrapper
     return false;
   }
 
-} // namespace wrapper
+} // namespace WrapperEsp32

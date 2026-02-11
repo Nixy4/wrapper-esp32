@@ -9,7 +9,7 @@
 #include "wrapper/spi.hpp"
 // #include "wrapper/display.hpp"
 
-namespace wrapper
+namespace WrapperEsp32
 {
   struct I2cDisplayConfig
   {
@@ -239,4 +239,4 @@ namespace wrapper
     bool Deinit();
   };
 
-} // namespace wrapper
+} // namespace WrapperEsp32

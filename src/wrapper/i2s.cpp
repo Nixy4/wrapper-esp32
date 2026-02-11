@@ -1,6 +1,6 @@
 #include "wrapper/i2s.hpp"
 
-using namespace wrapper;
+using namespace WrapperEsp32;
 
 I2sBus::~I2sBus()
 {

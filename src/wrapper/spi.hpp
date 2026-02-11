@@ -10,7 +10,7 @@
 #include <vector>
 #include <functional>
 
-namespace wrapper
+namespace WrapperEsp32
 {
 
 struct SpiBusConfig : public spi_bus_config_t
@@ -118,4 +118,4 @@ public:
     bool Read(size_t len, std::vector<uint8_t>& rx_data);
 };
 
-} // namespace wrapper
+} // namespace WrapperEsp32

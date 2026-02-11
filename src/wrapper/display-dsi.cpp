@@ -1,6 +1,6 @@
 #include "wrapper/display-dsi.hpp"
 
-namespace wrapper
+namespace WrapperEsp32
 {
 
 // --- DsiBus ---
@@ -192,4 +192,4 @@ bool DsiDisplay::Deinit()
   return false;
 }
 
-} // namespace wrapper
+} // namespace WrapperEsp32

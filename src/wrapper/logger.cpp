@@ -1,6 +1,6 @@
 #include "wrapper/logger.hpp"
 
-using namespace wrapper;
+using namespace WrapperEsp32;
 
 Logger::Logger() {
 }

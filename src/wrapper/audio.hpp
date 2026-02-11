@@ -7,7 +7,7 @@
 #include "wrapper/i2c.hpp"
 #include "wrapper/i2s.hpp"
 
-namespace wrapper
+namespace WrapperEsp32
 {
   class Speaker // no codec
   {
@@ -264,4 +264,4 @@ namespace wrapper
     bool TestMicrophone();
   };
 
-} // namespace wrapper
+} // namespace WrapperEsp32

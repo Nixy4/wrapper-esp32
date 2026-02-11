@@ -6,7 +6,7 @@
 #include "wrapper/logger.hpp"
 #include <functional>
 
-namespace wrapper
+namespace WrapperEsp32
 {
 
   struct I2cTouchConfig
@@ -88,4 +88,4 @@ namespace wrapper
     bool GetCoordinates(uint16_t *x, uint16_t *y, uint16_t *strength, uint8_t *point_num, uint8_t max_point_num);
   };
 
-} // namespace wrapper
+} // namespace WrapperEsp32

@@ -1,7 +1,7 @@
 #include "ldo.hpp"
 #include "esp_err.h"
 
-namespace wrapper
+namespace WrapperEsp32
 {
 
 bool LdoRegulator::Init(const LdoChannelConfig &config)
@@ -56,4 +56,4 @@ bool LdoRegulator::AdjustVoltage(int voltage_mv)
     return true;
 }
 
-} // namespace wrapper
+} // namespace WrapperEsp32

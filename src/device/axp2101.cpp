@@ -1,6 +1,6 @@
 #include "axp2101.hpp"
 
-namespace wrapper
+namespace WrapperEsp32
 {
 
 Axp2101::Axp2101(Logger& logger) : I2cDevice(logger)
@@ -11,4 +11,4 @@ Axp2101::~Axp2101()
 {
 }
 
-} // namespace wrapper
+} // namespace WrapperEsp32

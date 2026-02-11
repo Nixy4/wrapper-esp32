@@ -4,7 +4,7 @@
 #include "wrapper/i2c.hpp"
 #include "wrapper/display.hpp"
 
-namespace wrapper
+namespace WrapperEsp32
 {
 
 class UnitExtio2 : public I2cDevice
@@ -123,4 +123,4 @@ public:
   bool GetDigitalInput(int pin);;
 };
 
-} // namespace wrapper
+} // namespace WrapperEsp32

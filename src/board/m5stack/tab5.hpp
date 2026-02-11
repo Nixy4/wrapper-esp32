@@ -12,7 +12,7 @@
 #include "device/ili9881c.hpp"
 #include "device/gt911.hpp"
 
-namespace wrapper
+namespace WrapperEsp32
 {
     class M5StackTab5
     {

@@ -4,7 +4,7 @@
 #include <vector>
 #include <cstdint>
 
-namespace wrapper {
+namespace WrapperEsp32 {
 
 
 
@@ -27,4 +27,4 @@ public:
     }
 };
 
-} // namespace wrapper
+} // namespace WrapperEsp32

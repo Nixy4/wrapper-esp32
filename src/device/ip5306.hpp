@@ -1,7 +1,7 @@
 #pragma once
 #include "wrapper/i2c.hpp"
 
-namespace wrapper
+namespace WrapperEsp32
 {
 
 class Ip5306 : public I2cDevice
@@ -54,4 +54,4 @@ public:
 
 };
 
-} // namespace wrapper
+} // namespace WrapperEsp32

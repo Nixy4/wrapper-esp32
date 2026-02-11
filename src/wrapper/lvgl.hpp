@@ -5,7 +5,7 @@
 #include "wrapper/touch.hpp"
 #include "wrapper/logger.hpp"
 
-namespace wrapper
+namespace WrapperEsp32
 {
 
   struct LvglPortConfig : public lvgl_port_cfg_t
@@ -120,4 +120,4 @@ namespace wrapper
     bool SetRotation(lv_display_rotation_t rotation);
     void Test(bool is_monochrome = false);
   };
-} // namespace wrapper
+} // namespace WrapperEsp32

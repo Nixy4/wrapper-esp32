@@ -6,7 +6,7 @@
 #include <string_view>
 #include "wrapper/logger.hpp"
 
-namespace wrapper
+namespace WrapperEsp32
 {
 
 class Nvs
@@ -65,4 +65,4 @@ public:
     bool Dump(FILE* file);
 };
 
-} // namespace wrapper
+} // namespace WrapperEsp32

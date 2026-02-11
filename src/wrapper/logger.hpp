@@ -5,7 +5,7 @@
 #include <initializer_list>
 #include "esp_log.h"
 
-namespace wrapper
+namespace WrapperEsp32
 {
 
 class Logger 
@@ -72,4 +72,4 @@ public:
     }
 };
 
-} // namespace wrapper
+} // namespace WrapperEsp32

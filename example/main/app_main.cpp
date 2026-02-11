@@ -11,7 +11,7 @@
 #if CONFIG_WRAPPER_ESP32_BOARD_M5STACK_CORE_S3
 
 #include "board/m5stack/core-s3.hpp"
-using namespace wrapper;
+using namespace WrapperEsp32;
 Task board_init("board_init", [](void*) {
   M5StackCoreS3& board = M5StackCoreS3::GetInstance();
   board.Init();
@@ -21,7 +21,7 @@ Task board_init("board_init", [](void*) {
 #elif CONFIG_WRAPPER_ESP32_BOARD_M5STACK_TAB5
 
 #include "board/m5stack/tab5.hpp"
-using namespace wrapper;
+using namespace WrapperEsp32;
 Task board_init("board_init", [](void*) {
   M5StackTab5& board = M5StackTab5::GetInstance();
   
@@ -40,7 +40,7 @@ Task board_init("board_init", [](void*) {
 #elif CONFIG_WRAPPER_ESP32_BOARD_M5STACK_CARDPUTER
 
 #include "board/m5stack/cardputer.hpp"
-using namespace wrapper;
+using namespace WrapperEsp32;
 
 Task board_init("board_init", [](void*) {
   M5StackCardputer& board = M5StackCardputer::GetInstance();
@@ -48,7 +48,7 @@ Task board_init("board_init", [](void*) {
 }, nullptr, 8192, 5);
 
 #elif
-using namespace wrapper;
+using namespace WrapperEsp32;
 Task board_init("board_init", [](void*) {
 }, nullptr, 8192, 5);
 #endif

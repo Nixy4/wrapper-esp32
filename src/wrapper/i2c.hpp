@@ -3,7 +3,7 @@
 #include "driver/i2c_master.h"
 #include "wrapper/logger.hpp"
 
-namespace wrapper
+namespace WrapperEsp32
 {
 
   struct I2cBusConfig : public i2c_master_bus_config_t

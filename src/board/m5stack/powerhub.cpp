@@ -10,7 +10,7 @@
 
 #include "board/m5stack/powerhub.hpp"
 
-namespace wrapper {
+namespace WrapperEsp32 {
 
 enum class PowerControl { LED, USB, I2C, UART, BUS, VAMeter, Charge };
 enum class LedControl { NONE = -1, USB_C, USB_A, UART, BUS, I2C, BAT_CHARGE, POWER_L, POWER_R };
@@ -490,4 +490,4 @@ esp_err_t PowerHubI2c::LoadConfig() {
     return err;
 }
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
-} // namespace wrapper
+} // namespace WrapperEsp32

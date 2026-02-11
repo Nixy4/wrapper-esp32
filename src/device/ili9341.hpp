@@ -2,7 +2,7 @@
 #include "wrapper/display.hpp"
 #include "esp_lcd_ili9341.h"
 
-namespace wrapper {
+namespace WrapperEsp32 {
 
 class Ili9341 : public SpiDisplay {
 public:
@@ -11,4 +11,4 @@ public:
     bool Init(const SpiDisplayConfig& config);
 };
 
-} // namespace wrapper
+} // namespace WrapperEsp32

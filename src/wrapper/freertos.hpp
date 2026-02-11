@@ -14,7 +14,7 @@
 #include <type_traits>
 #include <optional>
 
-namespace wrapper
+namespace WrapperEsp32
 {
 
   void Delay(uint32_t milliseconds);
@@ -565,4 +565,4 @@ namespace wrapper
       state_ = State::Stopped;
     }
   };
-} // namespace wrapper
+} // namespace WrapperEsp32

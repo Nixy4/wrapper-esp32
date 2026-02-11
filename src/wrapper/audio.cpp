@@ -1,7 +1,7 @@
 #include <cmath>
 #include "wrapper/audio.hpp"
 
-namespace wrapper {
+namespace WrapperEsp32 {
 
 // Speaker Implementation
 Speaker::Speaker(Logger& logger) : logger_(logger) {}

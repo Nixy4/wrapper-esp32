@@ -1,6 +1,6 @@
   #include "m5stack_unit_extio2.hpp"
   
-namespace wrapper
+namespace WrapperEsp32
 {
 
   bool UnitExtio2::Init(const I2cBus &bus)

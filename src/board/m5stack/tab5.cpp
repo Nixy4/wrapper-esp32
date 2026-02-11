@@ -4,7 +4,7 @@
 #include "device/ili9881c.hpp"
 #include "device/gt911.hpp"
 
-namespace wrapper
+namespace WrapperEsp32
 {
   I2cBusConfig i2c_cfg(
       I2C_NUM_0,           // port
@@ -454,4 +454,4 @@ namespace wrapper
     // IO_EXPANDER_PIN_NUM_4 is LCD_EN
     io_expander0.SetLevel(IO_EXPANDER_PIN_NUM_4, on ? 1 : 0);
   }
-} // namespace wrapper
+} // namespace WrapperEsp32

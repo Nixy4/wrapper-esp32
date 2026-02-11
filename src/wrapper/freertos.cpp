@@ -2,7 +2,7 @@
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
 
-namespace wrapper
+namespace WrapperEsp32
 {
 
   void Delay(uint32_t milliseconds)
@@ -267,4 +267,4 @@ namespace wrapper
     return xEventGroupSync(handle_, bits_to_set, bits_to_wait_for, wait_ticks);
   }
 
-} // namespace wrapper
+} // namespace WrapperEsp32

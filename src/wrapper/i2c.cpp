@@ -5,7 +5,7 @@
 #include <vector>
 
 // --- I2cBus ---
-using namespace wrapper;
+using namespace WrapperEsp32;
 
 I2cBus::I2cBus(Logger& logger) : logger_(logger), bus_handle_(nullptr) {
 }

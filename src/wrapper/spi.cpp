@@ -3,7 +3,7 @@
 
 // --- SpiBus ---
 
-using namespace wrapper;
+using namespace WrapperEsp32;
 
 SpiBus::SpiBus(Logger& logger) : logger_(logger), host_id_(SPI2_HOST), initialized_(false), 
     config_(SPI2_HOST,                   // host

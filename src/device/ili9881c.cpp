@@ -1,6 +1,6 @@
 #include "ili9881c.hpp"
 
-namespace wrapper {
+namespace WrapperEsp32 {
 
 static const ili9881c_lcd_init_cmd_t m5tab5_disp_init_data[] = {
       // {cmd, { data }, data_size, delay}
@@ -241,4 +241,4 @@ bool Ili9881c::Init(DsiBus& bus, DsiDisplayConfig& config) {
         });
 }
 
-} // namespace wrapper
+} // namespace WrapperEsp32

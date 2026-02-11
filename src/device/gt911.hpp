@@ -5,7 +5,7 @@
 #include "wrapper/touch.hpp"
 #include "esp_lcd_touch_gt911.h"
 
-namespace wrapper {
+namespace WrapperEsp32 {
 
 class Gt911 : public I2cTouch {
 public:
@@ -14,6 +14,6 @@ public:
     bool Init(const I2cBus& bus, const I2cTouchConfig& config);
 };
 
-} // namespace wrapper
+} // namespace WrapperEsp32
 
 #endif

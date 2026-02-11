@@ -2,7 +2,7 @@
 
 #include "wrapper/i2c.hpp"
 
-namespace wrapper
+namespace WrapperEsp32
 {
 
 class Aw9523 : public I2cDevice
@@ -15,4 +15,4 @@ public:
     ~Aw9523();
 };
 
-} // namespace wrapper
+} // namespace WrapperEsp32

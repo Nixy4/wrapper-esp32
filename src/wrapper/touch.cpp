@@ -1,6 +1,6 @@
 #include "wrapper/touch.hpp"
 
-using namespace wrapper;
+using namespace WrapperEsp32;
 
 I2cTouch::I2cTouch(Logger &logger) : logger_(logger), io_handle_(NULL), touch_handle_(NULL)
 {

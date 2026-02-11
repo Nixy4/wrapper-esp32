@@ -6,7 +6,7 @@
 #include "wrapper/logger.hpp"
 #include <vector>
 
-namespace wrapper
+namespace WrapperEsp32
 {
 
 struct I2sBusConfig : public i2s_chan_config_t
@@ -257,4 +257,4 @@ public:
     uint32_t GetRxSampleRate() const { return rx_sample_rate_hz_; }
 };
 
-}; // namespace wrapper
+}; // namespace WrapperEsp32

@@ -19,7 +19,7 @@
 
 #include "board/m5stack/core-s3.hpp"
 
-namespace wrapper
+namespace WrapperEsp32
 {
 
 I2sBusConfig bus_config(I2S_NUM_0, I2S_ROLE_MASTER, 6, 240, true, false, 0);
@@ -446,4 +446,4 @@ AudioCodec& M5StackCoreS3::GetAudioCodec()
   return audio_codec;
 }
 
-} // namespace wrapper
+} // namespace WrapperEsp32

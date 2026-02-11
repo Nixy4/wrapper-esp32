@@ -1,6 +1,6 @@
 #pragma once
 
-namespace wrapper
+namespace WrapperEsp32
 {
 
 class M5StackCardputer
