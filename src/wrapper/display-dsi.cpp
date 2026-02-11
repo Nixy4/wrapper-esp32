@@ -55,8 +55,7 @@ bool DsiBus::Deinit() {
 
 // --- DsiDisplay ---
 
-DsiDisplay::DsiDisplay(Logger& logger) 
-  : DisplayBase(nullptr, nullptr), logger_(logger) {}
+DsiDisplay::DsiDisplay(Logger& logger) : DsiDisplay::DisplayBase(logger) {}
 
 DsiDisplay::~DsiDisplay() {
   Deinit();

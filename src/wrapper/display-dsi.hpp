@@ -129,7 +129,7 @@ namespace wrapper
   class DsiDisplay : public DisplayBase
   {
   private:
-    Logger& logger_;
+    // Logger& logger_;
 
     bool InitIo(const DsiBus& bus, const esp_lcd_dbi_io_config_t& config);
     bool InitPanel(
