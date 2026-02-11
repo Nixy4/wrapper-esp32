@@ -47,7 +47,7 @@ Task board_init("board_init", [](void*) {
   board.Init();
 }, nullptr, 8192, 5);
 
-#elif
+#else
 using namespace WrapperEsp32;
 Task board_init("board_init", [](void*) {
 }, nullptr, 8192, 5);
