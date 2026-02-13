@@ -172,6 +172,21 @@ void LvglPort::Unlock()
     lvgl_port_unlock();
 }
 
+void LvglPort::Stop()
+{
+    lvgl_port_stop();
+}
+
+void LvglPort::Resume()
+{
+    lvgl_port_resume();
+}
+
+void LvglPort::Wake(lvgl_port_event_type_t event, void* param)
+{
+    lvgl_port_task_wake(event, param);
+}
+
 void LvglPort::Test(bool is_monochrome)
 {
     logger_.Info("LVGL Functional Test Start (%s mode)", is_monochrome ? "Monochrome" : "Color");

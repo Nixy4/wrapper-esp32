@@ -87,8 +87,8 @@ namespace wrapper
   {
     LvglTouchConfig(float scale_x = 0.0f, float scale_y = 0.0f) : lvgl_port_touch_cfg_t{}
     {
-      disp = NULL;
-      handle = NULL;
+      disp = nullptr;
+      handle = nullptr;
       scale.x = scale_x;
       scale.y = scale_y;
     }
@@ -96,9 +96,9 @@ namespace wrapper
 
   class LvglPort
   {
-    Logger &logger_;
-    lv_display_t *lvgl_display_;
-    lv_indev_t *lvgl_touch_;
+    Logger& logger_;
+    lv_display_t* lvgl_display_;
+    lv_indev_t* lvgl_touch_;
     bool initialized_;
 
   public:
@@ -117,6 +117,9 @@ namespace wrapper
     bool AddTouch(const I2cTouch &touch, LvglTouchConfig &config);
     bool Lock(uint32_t timeout_ms);
     void Unlock();
+    void Stop();
+    void Resume();
+    void Wake(lvgl_port_event_type_t event, void* pram);
     bool SetRotation(lv_display_rotation_t rotation);
     void Test(bool is_monochrome = false);
   };

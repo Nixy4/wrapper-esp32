@@ -8,7 +8,7 @@ class Ili9341 : public SpiDisplay {
 public:
     using SpiDisplay::SpiDisplay; // Inherit constructor
 
-    bool Init(const SpiDisplayConfig& config);
+    bool Init(const SpiBus& buf,  const SpiDisplayConfig& config);
 };
 
 } // namespace wrapper

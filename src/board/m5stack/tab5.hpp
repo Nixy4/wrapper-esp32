@@ -32,7 +32,7 @@ namespace wrapper
             return instance;
         }
 
-        bool Init();
+        bool Init(int level);
 
         I2cBus& GetI2cBus();
         Pi4ioe5v6408& GetIoExpander0();

@@ -32,15 +32,15 @@ public:
     bool GetString(std::string_view key, std::string& out_value);
 };
 
-class Event
+class EventLoop
 {
     Logger& logger_;
     esp_event_loop_handle_t loop_handle_ = nullptr;
     bool is_default_loop_ = false;
 
 public:
-    Event(Logger& logger);
-    ~Event();
+    EventLoop(Logger& logger);
+    ~EventLoop();
 
     // Loop Management
     bool CreateLoopDefault();

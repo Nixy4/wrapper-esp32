@@ -244,20 +244,20 @@ template bool Nvs::GetValue<int32_t>(std::string_view, int32_t&);
 template bool Nvs::GetValue<uint64_t>(std::string_view, uint64_t&);
 template bool Nvs::GetValue<int64_t>(std::string_view, int64_t&);
 
-// Event Implementation
+// EventLoop Implementation
 
-Event::Event(Logger& logger) : logger_(logger)
+EventLoop::EventLoop(Logger& logger) : logger_(logger)
 {
 }
 
-Event::~Event()
+EventLoop::~EventLoop()
 {
     if (loop_handle_) {
         esp_event_loop_delete(loop_handle_);
     }
 }
 
-bool Event::CreateLoopDefault()
+bool EventLoop::CreateLoopDefault()
 {
     if (loop_handle_) {
         logger_.Error("Cannot create default loop: Custom loop already exists in this object");
@@ -278,7 +278,7 @@ bool Event::CreateLoopDefault()
     return err == ESP_OK;
 }
 
-bool Event::DeleteLoopDefault()
+bool EventLoop::DeleteLoopDefault()
 {
     esp_err_t err = esp_event_loop_delete_default();
     if (err == ESP_OK) {
@@ -290,7 +290,7 @@ bool Event::DeleteLoopDefault()
     return err == ESP_OK;
 }
 
-bool Event::CreateLoop(const esp_event_loop_args_t& args)
+bool EventLoop::CreateLoop(const esp_event_loop_args_t& args)
 {
     if (is_default_loop_) {
          logger_.Error("Cannot create custom loop: Default loop already managed by this object");
@@ -310,7 +310,7 @@ bool Event::CreateLoop(const esp_event_loop_args_t& args)
     return err == ESP_OK;
 }
 
-bool Event::DeleteLoop()
+bool EventLoop::DeleteLoop()
 {
     if (!loop_handle_) return false;
 
@@ -324,7 +324,7 @@ bool Event::DeleteLoop()
     return err == ESP_OK;
 }
 
-bool Event::RunLoop(TickType_t ticks_to_run)
+bool EventLoop::RunLoop(TickType_t ticks_to_run)
 {
     if (!loop_handle_) {
         logger_.Error("No custom loop to run");
@@ -333,7 +333,7 @@ bool Event::RunLoop(TickType_t ticks_to_run)
     return esp_event_loop_run(loop_handle_, ticks_to_run) == ESP_OK;
 }
 
-bool Event::Register(esp_event_base_t event_base, int32_t event_id, esp_event_handler_t event_handler, void* event_handler_arg, esp_event_handler_instance_t* instance)
+bool EventLoop::Register(esp_event_base_t event_base, int32_t event_id, esp_event_handler_t event_handler, void* event_handler_arg, esp_event_handler_instance_t* instance)
 {
     if (loop_handle_) {
         return esp_event_handler_instance_register_with(loop_handle_, event_base, event_id, event_handler, event_handler_arg, instance) == ESP_OK;
@@ -344,7 +344,7 @@ bool Event::Register(esp_event_base_t event_base, int32_t event_id, esp_event_ha
     return false;
 }
 
-bool Event::Unregister(esp_event_base_t event_base, int32_t event_id, esp_event_handler_instance_t instance)
+bool EventLoop::Unregister(esp_event_base_t event_base, int32_t event_id, esp_event_handler_instance_t instance)
 {
     if (loop_handle_) {
         return esp_event_handler_instance_unregister_with(loop_handle_, event_base, event_id, instance) == ESP_OK;
@@ -355,7 +355,7 @@ bool Event::Unregister(esp_event_base_t event_base, int32_t event_id, esp_event_
     return false;
 }
 
-bool Event::Post(esp_event_base_t event_base, int32_t event_id, const void* event_data, size_t event_data_size, TickType_t ticks_to_wait)
+bool EventLoop::Post(esp_event_base_t event_base, int32_t event_id, const void* event_data, size_t event_data_size, TickType_t ticks_to_wait)
 {
     if (loop_handle_) {
         return esp_event_post_to(loop_handle_, event_base, event_id, event_data, event_data_size, ticks_to_wait) == ESP_OK;
@@ -366,7 +366,7 @@ bool Event::Post(esp_event_base_t event_base, int32_t event_id, const void* even
     return false;
 }
 
-bool Event::PostFromIsr(esp_event_base_t event_base, int32_t event_id, const void* event_data, size_t event_data_size, BaseType_t* task_unblocked)
+bool EventLoop::PostFromIsr(esp_event_base_t event_base, int32_t event_id, const void* event_data, size_t event_data_size, BaseType_t* task_unblocked)
 {
 #if CONFIG_ESP_EVENT_POST_FROM_ISR
     if (loop_handle_) {
@@ -380,7 +380,7 @@ bool Event::PostFromIsr(esp_event_base_t event_base, int32_t event_id, const voi
 #endif
 }
 
-bool Event::Dump(FILE* file)
+bool EventLoop::Dump(FILE* file)
 {
     return esp_event_dump(file) == ESP_OK;
 }

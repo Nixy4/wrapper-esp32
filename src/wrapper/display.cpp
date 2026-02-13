@@ -2,12 +2,12 @@
 
 using namespace wrapper;
 
-bool I2cDisplay::InitIo(const esp_lcd_panel_io_i2c_config_t &config)
+bool I2cDisplay::InitIo(const I2cBus &bus, const I2cDisplayConfig &config)
 {
     if (io_handle_ != nullptr)
         return true;
 
-    esp_err_t ret = esp_lcd_new_panel_io_i2c(bus_.GetHandle(), &config, &io_handle_);
+    esp_err_t ret = esp_lcd_new_panel_io_i2c(bus.GetHandle(), &config.io_config, &io_handle_);
     if (ret != ESP_OK)
     {
         logger_.Error("Failed to create I2C panel IO: %s", esp_err_to_name(ret));
@@ -16,7 +16,7 @@ bool I2cDisplay::InitIo(const esp_lcd_panel_io_i2c_config_t &config)
     return true;
 }
 
-bool I2cDisplay::InitPanel(const esp_lcd_panel_dev_config_t &panel_config, std::function<esp_err_t(const esp_lcd_panel_io_handle_t)> custom_init_panel_func)
+bool I2cDisplay::InitPanel(const I2cDisplayConfig &config, std::function<esp_err_t(const esp_lcd_panel_io_handle_t)> custom_init_panel_func)
 {
     if (custom_init_panel_func != nullptr)
     {
@@ -48,11 +48,12 @@ bool I2cDisplay::InitPanel(const esp_lcd_panel_dev_config_t &panel_config, std::
 }
 
 bool I2cDisplay::Init(
+    const I2cBus &bus,
     const I2cDisplayConfig &config,
     std::function<esp_err_t(const esp_lcd_panel_io_handle_t, const esp_lcd_panel_dev_config_t *, esp_lcd_panel_handle_t *)> new_panel_func,
     std::function<esp_err_t(const esp_lcd_panel_io_handle_t)> custom_init_panel_func)
 {
-    if (!InitIo(config.io_config))
+    if (!InitIo(bus, config))
         return false;
 
     esp_err_t ret = new_panel_func(io_handle_, &config.panel_config, &panel_handle_);
@@ -62,7 +63,7 @@ bool I2cDisplay::Init(
         return false;
     }
 
-    return InitPanel(config.panel_config, custom_init_panel_func);
+    return InitPanel(config, custom_init_panel_func);
 }
 
 bool I2cDisplay::Deinit()
@@ -89,12 +90,13 @@ bool I2cDisplay::Deinit()
     return true;
 }
 
-bool SpiDisplay::InitIo(const esp_lcd_panel_io_spi_config_t &config)
+bool SpiDisplay::InitIo(const SpiBus &bus,
+                        const SpiDisplayConfig &config)
 {
     if (io_handle_ != nullptr)
         return true;
 
-    esp_err_t ret = esp_lcd_new_panel_io_spi(bus_.GetHostId(), &config, &io_handle_);
+    esp_err_t ret = esp_lcd_new_panel_io_spi(bus.GetHostId(), &config.io_config, &io_handle_);
     if (ret != ESP_OK)
     {
         logger_.Error("Failed to create SPI panel IO: %s", esp_err_to_name(ret));
@@ -103,7 +105,7 @@ bool SpiDisplay::InitIo(const esp_lcd_panel_io_spi_config_t &config)
     return true;
 }
 
-bool SpiDisplay::InitPanel(const esp_lcd_panel_dev_config_t &panel_config, std::function<esp_err_t(const esp_lcd_panel_io_handle_t)> custom_init_panel_func)
+bool SpiDisplay::InitPanel(const SpiDisplayConfig &config, std::function<esp_err_t(const esp_lcd_panel_io_handle_t)> custom_init_panel_func)
 {
     if (custom_init_panel_func != nullptr)
     {
@@ -132,11 +134,13 @@ bool SpiDisplay::InitPanel(const esp_lcd_panel_dev_config_t &panel_config, std::
     return true;
 }
 
-bool SpiDisplay::Init(const SpiDisplayConfig &config,
-                      std::function<esp_err_t(const esp_lcd_panel_io_handle_t, const esp_lcd_panel_dev_config_t *, esp_lcd_panel_handle_t *)> new_panel_func,
-                      std::function<esp_err_t(const esp_lcd_panel_io_handle_t)> custom_init_panel_func)
+bool SpiDisplay::Init(
+    const SpiBus &bus,
+    const SpiDisplayConfig &config,
+    std::function<esp_err_t(const esp_lcd_panel_io_handle_t, const esp_lcd_panel_dev_config_t *, esp_lcd_panel_handle_t *)> new_panel_func,
+    std::function<esp_err_t(const esp_lcd_panel_io_handle_t)> custom_init_panel_func)
 {
-    if (!InitIo(config.io_config))
+    if (!InitIo(bus, config))
         return false;
 
     esp_err_t ret = new_panel_func(io_handle_, &config.panel_config, &panel_handle_);
@@ -146,7 +150,7 @@ bool SpiDisplay::Init(const SpiDisplayConfig &config,
         return false;
     }
 
-    return InitPanel(config.panel_config, custom_init_panel_func);
+    return InitPanel(config, custom_init_panel_func);
 }
 
 bool SpiDisplay::Deinit()

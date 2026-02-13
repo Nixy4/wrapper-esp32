@@ -271,103 +271,106 @@ namespace wrapper
     return ESP_OK;
   };
 
-  bool M5StackTab5::Init()
+  bool M5StackTab5::Init(int level)
   {
-    // I2C Bus
-    if (!i2c_bus.Init(i2c_cfg)) {
-      return false;
-    }
-    i2c_bus.Scan();
-
-    // IO Expanders
-    // Note: io_expander0.Init returns esp_err_t because it's Pi4ioe5v6408 which is not refactored yet.
-    if (!io_expander0.Init(i2c_bus, Pi4ioe5v6408::ADDR_LOW)) {  // 0x43
-      return false;
-    }
-    if (!io_expander1.Init(i2c_bus, Pi4ioe5v6408::ADDR_HIGH)) { // 0x44
-      return false;
-    }
-
-    // IO Expander0 配置 (LCD, Touch, Speaker, Camera)
-    io_expander0.SetDirection(IO_EXPANDER_PIN_NUM_4, IO_EXPANDER_OUTPUT); // LCD_EN
-    io_expander0.SetLevel(IO_EXPANDER_PIN_NUM_4, 1);
-    io_expander0.SetOutputMode(IO_EXPANDER_PIN_NUM_4, IO_EXPANDER_OUTPUT_MODE_PUSH_PULL);
-
-    // 等待 LCD 电源稳定
-    vTaskDelay(pdMS_TO_TICKS(1000));
-
-    io_expander0.SetDirection(IO_EXPANDER_PIN_NUM_5, IO_EXPANDER_OUTPUT); // TOUCH_EN
-    io_expander0.SetLevel(IO_EXPANDER_PIN_NUM_5, 1);
-
-    io_expander0.SetDirection(IO_EXPANDER_PIN_NUM_1, IO_EXPANDER_OUTPUT); // SPEAKER_EN
-    io_expander0.SetLevel(IO_EXPANDER_PIN_NUM_1, 1);
-
-    io_expander1.SetDirection(IO_EXPANDER_PIN_NUM_3, IO_EXPANDER_OUTPUT); // USB_EN
-    io_expander1.SetLevel(IO_EXPANDER_PIN_NUM_3, 1);
-
-    io_expander1.SetDirection(IO_EXPANDER_PIN_NUM_0, IO_EXPANDER_OUTPUT); // WIFI_EN
-    io_expander1.SetLevel(IO_EXPANDER_PIN_NUM_0, 1);
-
-    // Backlight (LEDC)
-    if (!ledc_timer.Init(ledc_timer_cfg)) {
+    if(level>0)
+    {
+        // I2C Bus
+        if (!i2c_bus.Init(i2c_cfg)) {
         return false;
-    }
-    if (!ledc_channel.Init(ledc_channel_cfg)) {
-        return false;
-    }
+        }
+        i2c_bus.Scan();
 
-    // DSI PHY Power (LDO)
-    if (!dsi_phy_ldo.Init(dsi_phy_ldo_cfg)) {
+        // IO Expanders
+        // Note: io_expander0.Init returns esp_err_t because it's Pi4ioe5v6408 which is not refactored yet.
+        if (!io_expander0.Init(i2c_bus, Pi4ioe5v6408::ADDR_LOW)) {  // 0x43
         return false;
+        }
+        if (!io_expander1.Init(i2c_bus, Pi4ioe5v6408::ADDR_HIGH)) { // 0x44
+        return false;
+        }
     }
+    
+    if(level>1)
+    {
+        // IO Expander0 配置 (LCD, Touch, Speaker, Camera)
+        io_expander0.SetDirection(IO_EXPANDER_PIN_NUM_4, IO_EXPANDER_OUTPUT); // LCD_EN
+        io_expander0.SetLevel(IO_EXPANDER_PIN_NUM_4, 1);
+        io_expander0.SetOutputMode(IO_EXPANDER_PIN_NUM_4, IO_EXPANDER_OUTPUT_MODE_PUSH_PULL);
 
-    // 等待 DSI PHY 电源稳定
-    vTaskDelay(pdMS_TO_TICKS(100));
+        io_expander0.SetDirection(IO_EXPANDER_PIN_NUM_5, IO_EXPANDER_OUTPUT); // TOUCH_EN
+        io_expander0.SetLevel(IO_EXPANDER_PIN_NUM_5, 1);
 
-    dsi_bus.Init(dsi_bus_cfg);
-    if (!dsi_display.Init(dsi_bus, dsi_display_cfg)) {
-        return false;
-    }
+        io_expander0.SetDirection(IO_EXPANDER_PIN_NUM_1, IO_EXPANDER_OUTPUT); // SPEAKER_EN
+        io_expander0.SetLevel(IO_EXPANDER_PIN_NUM_1, 1);
 
-    // 官方 BSP 在初始化后调用 InvertColor(false)
-    dsi_display.InvertColor(false);
+        io_expander1.SetDirection(IO_EXPANDER_PIN_NUM_3, IO_EXPANDER_OUTPUT); // USB_EN
+        io_expander1.SetLevel(IO_EXPANDER_PIN_NUM_3, 1);
 
-    if (!gt911_touch.Init(i2c_bus, gt911_touch_cfg)) {
-        return false;
-    }
+        io_expander1.SetDirection(IO_EXPANDER_PIN_NUM_0, IO_EXPANDER_OUTPUT); // WIFI_EN
+        io_expander1.SetLevel(IO_EXPANDER_PIN_NUM_0, 1);
 
-    if (!i2s_bus.Init(i2s_bus_cfg)) {
-        return false;
-    }
-    if (!i2s_bus.ConfigureTxChannel(tx_rx_std_cfg)) {
-        return false;
-    }
-    if (!i2s_bus.ConfigureRxChannel(tx_rx_std_cfg)) {
-        return false;
-    }
-    if (!i2s_bus.EnableTxChannel()) {
-        return false;
-    }
-    if (!i2s_bus.EnableRxChannel()) {
-        return false;
-    }
+        // Backlight (LEDC)
+        if (!ledc_timer.Init(ledc_timer_cfg)) {
+            return false;
+        }
+        if (!ledc_channel.Init(ledc_channel_cfg)) {
+            return false;
+        }
 
-    audio_codec.Init(i2s_bus);
-    audio_codec.AddSpeaker(i2c_bus, ES8388_CODEC_DEFAULT_ADDR, spk_codec_new_func);
-    audio_codec.AddMicrophone(i2c_bus, ES7210_CODEC_DEFAULT_ADDR, mic_codec_new_func);
+        // DSI PHY Power (LDO)
+        if (!dsi_phy_ldo.Init(dsi_phy_ldo_cfg)) {
+            return false;
+        }
 
-    if (!lvgl_port.Init(lvgl_port_cfg)) {
-        return false;
-    }
-    if (!lvgl_port.AddDisplayDsi(dsi_display, lvgl_display_cfg, lvgl_dsi_cfg)) {
-        return false;
-    }
-    if (!lvgl_port.AddTouch(gt911_touch, lvgl_touch_cfg)) {
-        return false;
-    }
+        // 等待 DSI PHY 电源稳定
+        vTaskDelay(pdMS_TO_TICKS(100));
 
-    // 开启背光
-    SetDisplayBrightness(100);
+        dsi_bus.Init(dsi_bus_cfg);
+        if (!dsi_display.Init(dsi_bus, dsi_display_cfg)) {
+            return false;
+        }
+
+        // 官方 BSP 在初始化后调用 InvertColor(false)
+        dsi_display.InvertColor(false);
+
+        if (!gt911_touch.Init(i2c_bus, gt911_touch_cfg)) {
+            return false;
+        }
+
+        if (!i2s_bus.Init(i2s_bus_cfg)) {
+            return false;
+        }
+        if (!i2s_bus.ConfigureTxChannel(tx_rx_std_cfg)) {
+            return false;
+        }
+        if (!i2s_bus.ConfigureRxChannel(tx_rx_std_cfg)) {
+            return false;
+        }
+        if (!i2s_bus.EnableTxChannel()) {
+            return false;
+        }
+        if (!i2s_bus.EnableRxChannel()) {
+            return false;
+        }
+
+        audio_codec.Init(i2s_bus);
+        audio_codec.AddSpeaker(i2c_bus, ES8388_CODEC_DEFAULT_ADDR, spk_codec_new_func);
+        audio_codec.AddMicrophone(i2c_bus, ES7210_CODEC_DEFAULT_ADDR, mic_codec_new_func);
+
+        if (!lvgl_port.Init(lvgl_port_cfg)) {
+            return false;
+        }
+        if (!lvgl_port.AddDisplayDsi(dsi_display, lvgl_display_cfg, lvgl_dsi_cfg)) {
+            return false;
+        }
+        if (!lvgl_port.AddTouch(gt911_touch, lvgl_touch_cfg)) {
+            return false;
+        }
+
+        // 开启背光
+        SetDisplayBrightness(100);
+    }   
 
     return true;
   }
