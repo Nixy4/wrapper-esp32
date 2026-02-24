@@ -6,7 +6,7 @@ namespace wrapper
   bool UnitExtio2::Init(const I2cBus &bus)
   {
     I2cDeviceConfig cfg = I2cDeviceConfig(I2C_ADDR_DEFAULT, I2C_SPEED_HZ);
-    return I2cDevice::Init(bus, cfg) == ESP_OK;
+    return I2cDevice::Init(bus, cfg) == true;
   }
 
   void UnitExtio2::SetMode(int pin, Mode mode)
@@ -18,7 +18,7 @@ namespace wrapper
   UnitExtio2::Mode UnitExtio2::GetMode(int pin)
   {
     uint8_t mode = 0xFF;
-    if (ReadReg8(REG_MODE_IO(pin), mode, 1000) == ESP_OK)
+    if (ReadReg8(REG_MODE_IO(pin), mode, 1000) == true)
     {
       return static_cast<Mode>(mode);
     }
@@ -37,19 +37,19 @@ namespace wrapper
   bool UnitExtio2::SetDigitalOutput(int pin, bool state)
   {
     GetLogger().Debug("SetDigitalOutput: %d", state ? 1 : 0);
-    return WriteReg8(REG_OUTPUT_CTL_IO(pin), state ? 1 : 0, 1000) == ESP_OK;
+    return WriteReg8(REG_OUTPUT_CTL_IO(pin), state ? 1 : 0, 1000) == true;
   }
 
   bool UnitExtio2::SetDigitalOutputs(uint8_t states)
   {
     GetLogger().Debug("SetDigitalOutputs: 0x%02X", states);
-    return WriteReg8(Reg::OUTPUTS_CTL, states, 1000) == ESP_OK;
+    return WriteReg8(Reg::OUTPUTS_CTL, states, 1000) == true;
   }
 
   bool UnitExtio2::GetDigitalInput(int pin)
   {
     uint8_t state = 0;
-    if (ReadReg8(REG_DIGITAL_INPUT_IO(pin), state, 1000) == ESP_OK)
+    if (ReadReg8(REG_DIGITAL_INPUT_IO(pin), state, 1000) == true)
     {
       GetLogger().Debug("GetDigitalInput Pin %d: %d", pin, state ? 1 : 0);
       return state != 0;
