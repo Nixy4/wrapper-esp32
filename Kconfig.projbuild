@@ -1,7 +1,9 @@
 menu "Wrapper-ESP32"
     choice WRAPPER_ESP32_BOARD
         prompt "Select Wrapper-ESP32 board"
-        default WRAPPER_ESP32_BOARD_M5STACK_CORE_S3
+        default WRAPPER_ESP32_BOARD_CUSTOM
+        config WRAPPER_ESP32_BOARD_CUSTOM
+            bool "Custom board"
         config WRAPPER_ESP32_BOARD_M5STACK_CORE_S3
             bool "M5Stack Core S3"
             depends on IDF_TARGET_ESP32S3
