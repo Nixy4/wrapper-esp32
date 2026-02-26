@@ -1,6 +1,6 @@
 example/build
 example/managed_components
-
+dist/**
 # Prerequisites
 *.d
 
