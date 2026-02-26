@@ -1,0 +1,27 @@
+name: Upload component
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+jobs:
+  upload_components:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Upload to ESP Component Registry
+        uses: espressif/upload-components-ci-action@v2
+        with:
+          components: "wrapper-esp32: ."
+          namespace: "nixy4"
+
+          # If OIDC is unavailable in your environment,
+          # uncomment the line below and configure repository secret:
+          # IDF_COMPONENT_API_TOKEN
+          # api_token: ${{ secrets.IDF_COMPONENT_API_TOKEN }}
