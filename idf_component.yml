@@ -43,14 +43,11 @@ dependencies:
     public: true
     rules:
       - if: "target == esp32p4"
-  espressif/esp_codec_dev:
-    version : "*"
-    public: true
 
 repository: https://github.com/Nixy4/wrapper-esp32
 url: https://github.com/Nixy4/wrapper-esp32
 description: "wrapper-esp32 component"
-version: "0.1.0"
+version: "0.1.1"
 targets:
   - esp32s3
   - esp32p4
