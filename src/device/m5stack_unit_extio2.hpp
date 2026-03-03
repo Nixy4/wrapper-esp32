@@ -120,7 +120,7 @@ public:
   bool SetDigitalOutput(int pin, bool state);
 
   bool SetDigitalOutputs(uint8_t states);
-  bool GetDigitalInput(int pin);;
+  bool GetDigitalInput(int pin, bool& state);
 };
 
 } // namespace wrapper
