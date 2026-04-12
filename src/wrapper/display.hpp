@@ -214,7 +214,7 @@ namespace wrapper
         bool InitPanel(const I2cDisplayConfig &config, std::function<esp_err_t(const esp_lcd_panel_io_handle_t)> custom_init_panel_func = nullptr);
 
     public:
-        I2cDisplay(Logger &logger, const I2cBus &bus)
+        I2cDisplay(Logger &logger)
             : DisplayBase(nullptr, nullptr, logger) {}
 
         ~I2cDisplay() { Deinit(); }
