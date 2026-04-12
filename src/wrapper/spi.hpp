@@ -104,18 +104,71 @@ public:
     SpiDevice(Logger& logger);
     ~SpiDevice();
     Logger& GetLogger();
-    //ops
+    // ops
     bool Init(const SpiBus& bus, const SpiDeviceConfig& config);
     bool Deinit();
-    
-    // Simple transfer (write and read simultaneously)
+
+    // --- raw pointer variants (inline) ---
+
+    inline bool Transfer(const uint8_t *tx_data, uint8_t *rx_data, size_t len)
+    {
+        spi_transaction_t t = {};
+        t.length = len * 8;
+        t.tx_buffer = tx_data;
+        t.rx_buffer = rx_data;
+        return spi_device_transmit(dev_handle_, &t) == ESP_OK;
+    }
+
+    inline bool Write(const uint8_t *data, size_t len)
+    {
+        spi_transaction_t t = {};
+        t.length = len * 8;
+        t.tx_buffer = data;
+        t.rx_buffer = nullptr;
+        return spi_device_transmit(dev_handle_, &t) == ESP_OK;
+    }
+
+    inline bool Read(uint8_t *rx_data, size_t len)
+    {
+        spi_transaction_t t = {};
+        t.length = len * 8;
+        t.tx_buffer = nullptr;
+        t.rx_buffer = rx_data;
+        return spi_device_transmit(dev_handle_, &t) == ESP_OK;
+    }
+
+    // --- vector variants ---
+
+    // 全双工收发（等长）
     bool Transfer(const std::vector<uint8_t>& tx_data, std::vector<uint8_t>& rx_data);
-    
-    // Write only
+
+    // 只写
     bool Write(const std::vector<uint8_t>& data);
-    
-    // Read only (sends dummy data)
+
+    // 只读（发送 dummy 字节）
     bool Read(size_t len, std::vector<uint8_t>& rx_data);
+
+    // 单字节
+    bool WriteByte(uint8_t data);
+    bool ReadByte(uint8_t& data);
+
+    // --- 寄存器操作（地址 + 数据，适用于大多数 SPI 外设）---
+    // 写：单次事务发送 [reg_addr, data...]
+    bool WriteRegBytes(uint8_t reg_addr, const std::vector<uint8_t>& data);
+    // 读：发送 [reg_addr, dummy*len]，返回第 2..n+1 字节
+    bool ReadRegBytes(uint8_t reg_addr, std::vector<uint8_t>& data, size_t len);
+
+    bool WriteReg8(uint8_t reg_addr, uint8_t data);
+    bool ReadReg8(uint8_t reg_addr, uint8_t& data);
+    bool WriteReg16(uint8_t reg_addr, uint16_t data);
+    bool ReadReg16(uint8_t reg_addr, uint16_t& data);
+    bool WriteReg32(uint8_t reg_addr, uint32_t data);
+    bool ReadReg32(uint8_t reg_addr, uint32_t& data);
+
+    bool WriteRegBit(uint8_t reg_addr, uint8_t bit, bool value);
+    bool ReadRegBit(uint8_t reg_addr, uint8_t bit, bool& value);
+    bool WriteRegBits(uint8_t reg_addr, uint8_t mask, uint8_t value);
+    bool ReadRegBits(uint8_t reg_addr, uint8_t mask, uint8_t& value);
 };
 
 } // namespace wrapper

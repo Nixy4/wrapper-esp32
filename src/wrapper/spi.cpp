@@ -179,12 +179,129 @@ bool SpiDevice::Read(size_t len, std::vector<uint8_t>& rx_data) {
     std::memset(&t, 0, sizeof(t));
     
     t.length = len * 8;
-    t.tx_buffer = NULL; // No transmit (will send 0s or random depending on half-duplex settings, usually 0 if not set)
+    t.tx_buffer = NULL;
     
     rx_data.resize(len);
     t.rx_buffer = rx_data.data();
 
     return spi_device_transmit(dev_handle_, &t) == ESP_OK;
+}
+
+bool SpiDevice::WriteByte(uint8_t data) {
+    spi_transaction_t t = {};
+    t.length = 8;
+    t.tx_buffer = &data;
+    t.rx_buffer = nullptr;
+    return spi_device_transmit(dev_handle_, &t) == ESP_OK;
+}
+
+bool SpiDevice::ReadByte(uint8_t& data) {
+    spi_transaction_t t = {};
+    t.length = 8;
+    t.tx_buffer = nullptr;
+    t.rx_buffer = &data;
+    return spi_device_transmit(dev_handle_, &t) == ESP_OK;
+}
+
+bool SpiDevice::WriteRegBytes(uint8_t reg_addr, const std::vector<uint8_t>& data) {
+    std::vector<uint8_t> tx;
+    tx.reserve(1 + data.size());
+    tx.push_back(reg_addr);
+    tx.insert(tx.end(), data.begin(), data.end());
+
+    spi_transaction_t t = {};
+    t.length = tx.size() * 8;
+    t.tx_buffer = tx.data();
+    t.rx_buffer = nullptr;
+    return spi_device_transmit(dev_handle_, &t) == ESP_OK;
+}
+
+bool SpiDevice::ReadRegBytes(uint8_t reg_addr, std::vector<uint8_t>& data, size_t len) {
+    // 全双工：发送 [reg_addr, dummy*len]，接收缓冲区第 1..n 字节为数据
+    std::vector<uint8_t> tx(1 + len, 0x00);
+    tx[0] = reg_addr;
+    std::vector<uint8_t> rx(1 + len, 0x00);
+
+    spi_transaction_t t = {};
+    t.length = (1 + len) * 8;
+    t.tx_buffer = tx.data();
+    t.rx_buffer = rx.data();
+
+    if (spi_device_transmit(dev_handle_, &t) != ESP_OK) {
+        return false;
+    }
+    data.assign(rx.begin() + 1, rx.end());
+    return true;
+}
+
+bool SpiDevice::WriteReg8(uint8_t reg_addr, uint8_t data) {
+    return WriteRegBytes(reg_addr, {data});
+}
+
+bool SpiDevice::ReadReg8(uint8_t reg_addr, uint8_t& data) {
+    std::vector<uint8_t> buf;
+    if (!ReadRegBytes(reg_addr, buf, 1)) return false;
+    data = buf[0];
+    return true;
+}
+
+bool SpiDevice::WriteReg16(uint8_t reg_addr, uint16_t data) {
+    return WriteRegBytes(reg_addr, {static_cast<uint8_t>(data >> 8), static_cast<uint8_t>(data & 0xFF)});
+}
+
+bool SpiDevice::ReadReg16(uint8_t reg_addr, uint16_t& data) {
+    std::vector<uint8_t> buf;
+    if (!ReadRegBytes(reg_addr, buf, 2)) return false;
+    data = (static_cast<uint16_t>(buf[0]) << 8) | buf[1];
+    return true;
+}
+
+bool SpiDevice::WriteReg32(uint8_t reg_addr, uint32_t data) {
+    return WriteRegBytes(reg_addr, {
+        static_cast<uint8_t>(data >> 24),
+        static_cast<uint8_t>(data >> 16),
+        static_cast<uint8_t>(data >> 8),
+        static_cast<uint8_t>(data & 0xFF)
+    });
+}
+
+bool SpiDevice::ReadReg32(uint8_t reg_addr, uint32_t& data) {
+    std::vector<uint8_t> buf;
+    if (!ReadRegBytes(reg_addr, buf, 4)) return false;
+    data = (static_cast<uint32_t>(buf[0]) << 24) |
+           (static_cast<uint32_t>(buf[1]) << 16) |
+           (static_cast<uint32_t>(buf[2]) << 8) |
+            static_cast<uint32_t>(buf[3]);
+    return true;
+}
+
+bool SpiDevice::WriteRegBit(uint8_t reg_addr, uint8_t bit, bool value) {
+    uint8_t reg = 0;
+    if (!ReadReg8(reg_addr, reg)) return false;
+    if (value) reg |= (1u << bit);
+    else       reg &= ~(1u << bit);
+    return WriteReg8(reg_addr, reg);
+}
+
+bool SpiDevice::ReadRegBit(uint8_t reg_addr, uint8_t bit, bool& value) {
+    uint8_t reg = 0;
+    if (!ReadReg8(reg_addr, reg)) return false;
+    value = (reg >> bit) & 0x01;
+    return true;
+}
+
+bool SpiDevice::WriteRegBits(uint8_t reg_addr, uint8_t mask, uint8_t value) {
+    uint8_t reg = 0;
+    if (!ReadReg8(reg_addr, reg)) return false;
+    reg = (reg & ~mask) | (value & mask);
+    return WriteReg8(reg_addr, reg);
+}
+
+bool SpiDevice::ReadRegBits(uint8_t reg_addr, uint8_t mask, uint8_t& value) {
+    uint8_t reg = 0;
+    if (!ReadReg8(reg_addr, reg)) return false;
+    value = reg & mask;
+    return true;
 }
 
 
