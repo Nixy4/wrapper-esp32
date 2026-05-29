@@ -89,6 +89,8 @@ bool LvglPort::AddDisplay(const DisplayBase& display, LvglDisplayConfig& config)
         return false;
     }
 
+    logger_.Info("LVGL display added");
+
     return true;
 }
 

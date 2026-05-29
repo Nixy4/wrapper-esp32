@@ -22,6 +22,13 @@ bool I2cDisplay::InitPanel(
 {
     esp_err_t err = ESP_OK;
 
+    err = esp_lcd_panel_reset(panel_handle_);
+    if (err != ESP_OK)
+    {
+        logger_.Error("Failed to reset panel: %s", esp_err_to_name(err));
+        return false;
+    }
+
     if (custom_init_panel_func != nullptr)
     {
         err = custom_init_panel_func(io_handle_);
@@ -43,10 +50,10 @@ bool I2cDisplay::InitPanel(
         logger_.Info("Panel initialized successfully wit Default settings");
     }
 
-    err = esp_lcd_panel_reset(panel_handle_);
-    if (err != ESP_OK)
+    err = esp_lcd_panel_disp_on_off(panel_handle_, true);
+    if (err != ESP_OK && err != ESP_ERR_NOT_SUPPORTED)
     {
-        logger_.Error("Failed to reset panel: %s", esp_err_to_name(err));
+        logger_.Error("Failed to turn on panel: %s", esp_err_to_name(err));
         return false;
     }
 
@@ -119,6 +126,13 @@ bool SpiDisplay::InitPanel(
 {
     esp_err_t err = ESP_OK;
 
+    err = esp_lcd_panel_reset(panel_handle_);
+    if (err != ESP_OK)
+    {
+        logger_.Error("Failed to reset panel: %s", esp_err_to_name(err));
+        return false;
+    }
+
     if (custom_init_panel_func != nullptr)
     {
         err = custom_init_panel_func(io_handle_);
@@ -138,10 +152,10 @@ bool SpiDisplay::InitPanel(
         }
     }
 
-    err = esp_lcd_panel_reset(panel_handle_);
-    if (err != ESP_OK)
+    err = esp_lcd_panel_disp_on_off(panel_handle_, true);
+    if (err != ESP_OK && err != ESP_ERR_NOT_SUPPORTED)
     {
-        logger_.Error("Failed to reset panel: %s", esp_err_to_name(err));
+        logger_.Error("Failed to turn on panel: %s", esp_err_to_name(err));
         return false;
     }
 
