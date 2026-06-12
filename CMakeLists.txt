@@ -16,6 +16,12 @@ set(REQUIRES_ESP_IDF
   "esp_driver_uart"
   "esp_driver_ledc"
   "esp_driver_usb_serial_jtag"
+  "fatfs"
+  "wear_levelling"
+  "spiffs"
+  "esp_driver_sdmmc"
+  "esp_driver_sdspi"
+  "sdmmc"
 )
 set(REQUIRES_ESP_REGISTRY "")
 set(REQUIRES_PROJECT "")
