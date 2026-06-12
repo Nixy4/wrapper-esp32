@@ -22,6 +22,14 @@ set(REQUIRES_ESP_IDF
   "esp_driver_sdmmc"
   "esp_driver_sdspi"
   "sdmmc"
+  "spi_flash"
+  "bootloader_support"
+  "app_update"
+  "esp_partition"
+  "esp_rom"
+  "esp_https_ota"
+  "esp_http_client"
+  "esp_app_format"
 )
 set(REQUIRES_ESP_REGISTRY "")
 set(REQUIRES_PROJECT "")
