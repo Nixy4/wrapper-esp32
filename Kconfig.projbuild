@@ -13,5 +13,8 @@ menu "Wrapper-ESP32"
         config WRAPPER_ESP32_BOARD_M5STACK_TAB5
             bool "M5Stack Tab5"
             depends on IDF_TARGET_ESP32P4
+        config WRAPPER_ESP32_BOARD_LILYGO_T_LORA_PAGER
+            bool "LilyGo T-LoraPager"
+            depends on IDF_TARGET_ESP32S3
     endchoice
 endmenu
