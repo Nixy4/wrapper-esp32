@@ -4,6 +4,7 @@
 #include "wrapper/display.hpp"
 #include "wrapper/touch.hpp"
 #include "wrapper/logger.hpp"
+#include "wrapper/encoder.hpp"
 
 namespace wrapper
 {
@@ -100,6 +101,8 @@ class LvglPort
     Logger& logger_;
     lv_display_t* lvgl_display_;
     lv_indev_t* lvgl_touch_;
+    lv_indev_t* lvgl_encoder_;  ///< 编码器输入设备（可为 nullptr）
+    lv_group_t* lvgl_group_;    ///< 编码器使用的 LVGL 焦点组
     bool initialized_;
 
    public:
@@ -109,6 +112,8 @@ class LvglPort
     bool IsInitialized() const { return initialized_; }
     lv_display_t* GetDisplay() const { return lvgl_display_; }
     lv_indev_t* GetTouch() const { return lvgl_touch_; }
+    lv_indev_t* GetEncoder() const { return lvgl_encoder_; }
+    lv_group_t* GetGroup() const { return lvgl_group_; }
 
     // operations
     bool Init(const LvglPortConfig& config);
@@ -118,6 +123,16 @@ class LvglPort
                        LvglDisplayConfig& config,
                        const LvglDisplayDsiConfig& dsi_config);
     bool AddTouch(const I2cTouch& touch, LvglTouchConfig& config);
+    /**
+     * @brief 将旋转编码器注册为 LVGL 编码器输入设备。
+     *
+     * 同时创建 LVGL 焦点组并设置为全局默认组，
+     * 使所有新建的可聚焦控件自动加入该组。
+     *
+     * @param enc  已初始化的 Encoder 实例引用
+     * @return true 成功；false 失败
+     */
+    bool AddEncoder(Encoder& enc);
     bool Lock(uint32_t timeout_ms);
     void Unlock();
     void Stop();

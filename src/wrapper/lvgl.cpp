@@ -1,11 +1,17 @@
 #include "wrapper/lvgl.hpp"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
+#include "lvgl.h"
 
 using namespace wrapper;
 
 LvglPort::LvglPort(Logger& logger)
-    : logger_(logger), lvgl_display_(NULL), lvgl_touch_(NULL), initialized_(false)
+    : logger_(logger),
+      lvgl_display_(NULL),
+      lvgl_touch_(NULL),
+      lvgl_encoder_(NULL),
+      lvgl_group_(NULL),
+      initialized_(false)
 {
 }
 
@@ -33,6 +39,18 @@ bool LvglPort::Init(const LvglPortConfig& config)
 
 bool LvglPort::Deinit()
 {
+    if (lvgl_encoder_ != NULL)
+    {
+        lv_indev_delete(lvgl_encoder_);
+        lvgl_encoder_ = NULL;
+    }
+
+    if (lvgl_group_ != NULL)
+    {
+        lv_group_delete(lvgl_group_);
+        lvgl_group_ = NULL;
+    }
+
     if (lvgl_touch_ != NULL)
     {
         lvgl_port_remove_touch(lvgl_touch_);
@@ -157,6 +175,74 @@ bool LvglPort::AddTouch(const I2cTouch& touch, LvglTouchConfig& config)
     }
 
     logger_.Info("LVGL touch added");
+    return true;
+}
+
+// =============================================================================
+// LVGL 编码器读取回调（静态，从 LVGL 任务中调用）
+// =============================================================================
+static void EncoderReadCb(lv_indev_t* indev, lv_indev_data_t* data)
+{
+    wrapper::Encoder* enc = static_cast<wrapper::Encoder*>(lv_indev_get_user_data(indev));
+    if (enc == nullptr)
+        return;
+
+    data->enc_diff = static_cast<int16_t>(enc->GetAndClearDelta());
+    data->state = enc->IsButtonPressed() ? LV_INDEV_STATE_PRESSED : LV_INDEV_STATE_RELEASED;
+
+    // 消费一次点击事件（确保即使松开速度很快也能被识别）
+    if (enc->GetAndClearClick())
+        data->state = LV_INDEV_STATE_PRESSED;
+}
+
+bool LvglPort::AddEncoder(Encoder& enc)
+{
+    if (!initialized_)
+    {
+        logger_.Error("LVGL port not initialized");
+        return false;
+    }
+    if (lvgl_display_ == NULL)
+    {
+        logger_.Error("Display must be added before encoder");
+        return false;
+    }
+    if (!enc.IsInitialized())
+    {
+        logger_.Error("Encoder not initialized");
+        return false;
+    }
+
+    // 已有编码器则先删除
+    if (lvgl_encoder_ != NULL)
+    {
+        lv_indev_delete(lvgl_encoder_);
+        lvgl_encoder_ = NULL;
+    }
+
+    // 创建 LVGL 编码器输入设备
+    lvgl_encoder_ = lv_indev_create();
+    if (lvgl_encoder_ == NULL)
+    {
+        logger_.Error("Failed to create LVGL encoder indev");
+        return false;
+    }
+    lv_indev_set_type(lvgl_encoder_, LV_INDEV_TYPE_ENCODER);
+    lv_indev_set_read_cb(lvgl_encoder_, EncoderReadCb);
+    lv_indev_set_user_data(lvgl_encoder_, &enc);
+    lv_indev_set_display(lvgl_encoder_, lvgl_display_);
+
+    // 创建焦点组并设为默认，使所有新建可聚焦控件自动加入
+    if (lvgl_group_ == NULL)
+    {
+        lvgl_group_ = lv_group_create();
+        if (lvgl_group_ != NULL)
+            lv_group_set_default(lvgl_group_);
+    }
+    if (lvgl_group_ != NULL)
+        lv_indev_set_group(lvgl_encoder_, lvgl_group_);
+
+    logger_.Info("LVGL encoder added (group default set)");
     return true;
 }
 

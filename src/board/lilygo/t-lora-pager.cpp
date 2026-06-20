@@ -28,28 +28,28 @@ namespace wrapper
 {
 
 // =============================================================================
-// XL9555 virtual pin assignments
-// TODO: Verify exact numbers against the T-LoraPager schematic PDF.
+// XL9555 虚拟引脚分配
+// TODO: 请对照 T-LoraPager 原理图 PDF 确认具体编号。
 //       (github.com/Xinyuan-LilyGO/LilyGoLib/blob/master/Files/...V1.0_20250805.pdf)
 // =============================================================================
-static constexpr uint32_t kXl9555PinKbRst = 0;    // TODO: confirm from schematic
-static constexpr uint32_t kXl9555PinLoraEn = 1;   // TODO: confirm from schematic
-static constexpr uint32_t kXl9555PinGpsEn = 2;    // TODO: confirm from schematic
-static constexpr uint32_t kXl9555PinDrvEn = 3;    // TODO: confirm from schematic
-static constexpr uint32_t kXl9555PinAmpEn = 4;    // TODO: confirm from schematic
-static constexpr uint32_t kXl9555PinNfcEn = 5;    // TODO: confirm from schematic
-static constexpr uint32_t kXl9555PinSdEn = 6;     // TODO: confirm from schematic
-static constexpr uint32_t kXl9555PinSdDet = 7;    // TODO: confirm from schematic (input)
-static constexpr uint32_t kXl9555PinDispRst = 8;  // TODO: confirm from schematic (optional)
+static constexpr uint32_t kXl9555PinKbRst = 0;    // TODO: 待原理图确认
+static constexpr uint32_t kXl9555PinLoraEn = 1;   // TODO: 待原理图确认
+static constexpr uint32_t kXl9555PinGpsEn = 2;    // TODO: 待原理图确认
+static constexpr uint32_t kXl9555PinDrvEn = 3;    // TODO: 待原理图确认
+static constexpr uint32_t kXl9555PinAmpEn = 4;    // TODO: 待原理图确认
+static constexpr uint32_t kXl9555PinNfcEn = 5;    // TODO: 待原理图确认
+static constexpr uint32_t kXl9555PinSdEn = 6;     // TODO: 待原理图确认
+static constexpr uint32_t kXl9555PinSdDet = 7;    // TODO: 待原理图确认（输入）
+static constexpr uint32_t kXl9555PinDispRst = 8;  // TODO: 待原理图确认（可选）
 
-// ES8311 I2C address (8-bit form expected by esp_codec_dev: 7-bit 0x18 << 1 = 0x30)
+// ES8311 I2C 地址（esp_codec_dev 期望的8 位格式：7 位 0x18 << 1 = 0x30）
 static constexpr uint8_t kEs8311Addr = 0x30;
 
 // =============================================================================
-// Bus configurations
+// 总线配置
 // =============================================================================
 
-// I2C bus (shared: XL9555, BQ25896, TCA8418, ES8311)
+// I2C 总线（共用：XL9555、BQ25896、TCA8418、ES8311）
 I2cBusConfig i2c_bus_cfg(I2C_NUM_0,            // port
                          GPIO_NUM_3,           // sda
                          GPIO_NUM_2,           // scl
@@ -61,7 +61,7 @@ I2cBusConfig i2c_bus_cfg(I2C_NUM_0,            // port
                          false                 // allow_pd
 );
 
-// Shared SPI bus (ST7796 display, LoRa, NFC, SD)
+// 共享 SPI 总线（ST7796 显示屏、LoRa、NFC、SD）
 SpiBusConfig spi_bus_cfg(SPI2_HOST,                     // host
                          GPIO_NUM_34,                   // mosi
                          GPIO_NUM_33,                   // miso
@@ -80,7 +80,7 @@ SpiBusConfig spi_bus_cfg(SPI2_HOST,                     // host
                          SPI_DMA_CH_AUTO                // dma_chan
 );
 
-// ST7796 display SPI panel IO config
+// ST7796 显示屏 SPI 面板 IO 配置
 SpiDisplayConfig spi_display_cfg(
     // io_config
     GPIO_NUM_38,       // cs_gpio
@@ -94,7 +94,7 @@ SpiDisplayConfig spi_display_cfg(
     nullptr,           // user_ctx
     0,                 // cs_ena_pretrans
     0,                 // cs_ena_posttrans
-    // io_config flags
+    // IO 配置标志
     0,  // dc_high_on_cmd
     0,  // dc_low_on_data
     0,  // dc_low_on_param
@@ -104,7 +104,7 @@ SpiDisplayConfig spi_display_cfg(
     0,  // lsb_first
     0,  // cs_high_active
     // panel_dev_config
-    GPIO_NUM_NC,                // reset_gpio_num  (no dedicated HW reset pin)
+    GPIO_NUM_NC,                // reset_gpio_num（无专用硬件复位引脚）
     LCD_RGB_ELEMENT_ORDER_BGR,  // rgb_ele_order
     LCD_RGB_DATA_ENDIAN_BIG,    // data_endian
     16,                         // bits_per_pixel
@@ -112,7 +112,7 @@ SpiDisplayConfig spi_display_cfg(
     nullptr                     // vendor_config
 );
 
-// LEDC backlight timer (GPIO 42, 5 kHz, 10-bit duty = 0–1023)
+// LEDC 背光定时器（GPIO 42, 5 kHz, 10 位占空比 = 0–1023）
 LedcTimerConfig ledc_timer_cfg(LEDC_LOW_SPEED_MODE,  // speed_mode
                                LEDC_TIMER_10_BIT,    // duty_resolution
                                LEDC_TIMER_0,         // timer_num
@@ -120,15 +120,15 @@ LedcTimerConfig ledc_timer_cfg(LEDC_LOW_SPEED_MODE,  // speed_mode
                                LEDC_AUTO_CLK         // clk_cfg
 );
 
-LedcChannelConfig ledc_channel_cfg(GPIO_NUM_42,          // gpio_num  (display backlight)
+LedcChannelConfig ledc_channel_cfg(GPIO_NUM_42,          // gpio_num（显示屏背光）
                                    LEDC_LOW_SPEED_MODE,  // speed_mode
                                    LEDC_CHANNEL_0,       // channel
                                    LEDC_TIMER_0,         // timer_sel
-                                   0,                    // duty (off initially)
+                                   0,                    // duty（初始尚未亮起）
                                    0                     // hpoint
 );
 
-// I2S bus (ES8311 audio codec)
+// I2S 总线（ES8311 音频编解码器）
 I2sBusConfig i2s_bus_cfg(I2S_NUM_0,        // port
                          I2S_ROLE_MASTER,  // role
                          6,                // dma_desc_num
@@ -138,7 +138,7 @@ I2sBusConfig i2s_bus_cfg(I2S_NUM_0,        // port
                          0                 // intr_priority
 );
 
-// I2S standard channel – shared for TX (speaker) and RX (microphone)
+// I2S 标准通道 — TX（扬声器）与 RX（麦克风）共用
 I2sChanStdConfig i2s_chan_cfg(
     // clk
     48000,                  // sample_rate_hz
@@ -154,30 +154,30 @@ I2sChanStdConfig i2s_chan_cfg(
     16,                        // ws_width
     false,                     // ws_pol
     true,                      // bit_shift
-    true,                      // msb_right (left_align=true in ESP-IDF param order)
+    true,                      // msb_right（ESP-IDF 参数顺序中即 left_align=true）
     false,                     // big_endian
     false,                     // bit_order_lsb
     // gpio
     GPIO_NUM_10,  // mclk
     GPIO_NUM_11,  // bclk
     GPIO_NUM_18,  // ws
-    GPIO_NUM_45,  // dout (speaker)
-    GPIO_NUM_17,  // din  (microphone)
+    GPIO_NUM_45,  // dout（扬声器）
+    GPIO_NUM_17,  // din （麦克风）
     false,        // invert_mclk
     false,        // invert_bclk
     false         // invert_ws
 );
 
-// XL9555 device config
+// XL9555 设备配置
 I2cDeviceConfig xl9555_dev_cfg(Xl9555::DEFAULT_ADDR, Xl9555::DEFAULT_SPEED);
 
-// BQ25896 device config
+// BQ25896 设备配置
 I2cDeviceConfig bq25896_dev_cfg(Bq25896::DEFAULT_ADDR, Bq25896::DEFAULT_SPEED);
 
-// TCA8418 device config
+// TCA8418 设备配置
 I2cDeviceConfig tca8418_dev_cfg(Tca8418::DEFAULT_ADDR, Tca8418::DEFAULT_SPEED);
 
-// LVGL port
+// LVGL 移植层
 LvglPortConfig lvgl_port_cfg(5,                                    // task_priority
                              8192,                                 // task_stack
                              1,                                    // task_affinity
@@ -186,9 +186,9 @@ LvglPortConfig lvgl_port_cfg(5,                                    // task_prior
                              25                                    // timer_period_ms
 );
 
-// LVGL display: 480 x 222, RGB565
-// x_offset = 0, y_offset = 49 (ST7796 480×320 chip, panel window starts at row 49)
-LvglDisplayConfig lvgl_display_cfg(480 * 60,                // buffer_size (one row × 60 lines)
+// LVGL 显示屏：480 × 222，RGB565
+// x_offset = 0, y_offset = 49（ST7796 为 480×320 控制器，面板可视窗口从第 49 行开始）
+LvglDisplayConfig lvgl_display_cfg(480 * 60,                // 缓冲区大小（一行 × 60 行）
                                    true,                    // double_buffer
                                    0,                       // trans_size
                                    480,                     // hres
@@ -201,7 +201,7 @@ LvglDisplayConfig lvgl_display_cfg(480 * 60,                // buffer_size (one 
                                    true,                    // buff_dma
                                    true,                    // buff_spiram
                                    false,                   // sw_rotate
-                                   true,                    // swap_bytes (big-endian SPI)
+                                   true,                    // swap_bytes（SPI 大端序）
                                    false,                   // full_refresh
                                    false                    // direct_mode
 );
@@ -209,7 +209,7 @@ LvglDisplayConfig lvgl_display_cfg(480 * 60,                // buffer_size (one 
 LvglTouchConfig lvgl_touch_cfg(0.0f, 0.0f);
 
 // =============================================================================
-// Logger instances
+// 日志实例
 // =============================================================================
 Logger l_i2c("LoraPager", "I2C", "Bus");
 Logger l_spi("LoraPager", "SPI", "Bus");
@@ -223,7 +223,7 @@ Logger l_kb("LoraPager", "I2C", "TCA8418");
 Logger l_pmu("LoraPager", "I2C", "BQ25896");
 
 // =============================================================================
-// Device / bus instances  (file-scope, constructed once)
+// 设备 / 总线实例（文件作用域，只构造一次）
 // =============================================================================
 I2cBus i2c_bus(l_i2c);
 SpiBus spi_bus(l_spi);
@@ -237,8 +237,12 @@ LvglPort lvgl_port(l_lvgl);
 Tca8418 tca8418(l_kb);
 Bq25896 bq25896(l_pmu);
 
+// 旋转编码器（A=GPIO40, B=GPIO41, 按钮=GPIO7）
+Logger l_enc("LoraPager", "Encoder");
+Encoder encoder;
+
 // =============================================================================
-// ES8311 codec factory lambdas
+// ES8311 编解码器工厂 lambda
 // =============================================================================
 std::function<esp_err_t()> spk_codec_new_func = []() -> esp_err_t
 {
@@ -248,7 +252,7 @@ std::function<esp_err_t()> spk_codec_new_func = []() -> esp_err_t
     cfg.codec_mode = ESP_CODEC_DEV_WORK_MODE_DAC;
     cfg.master_mode = false;
     cfg.use_mclk = true;
-    cfg.pa_pin = -1;  // PA enabled via XL9555 in the callback below
+    cfg.pa_pin = -1;  // 功放通过下面回调中的 XL9555 使能
     cfg.pa_reverted = false;
     cfg.hw_gain = {.pa_voltage = 3.3f, .codec_dac_voltage = 3.3f, .pa_gain = 0.0f};
 
@@ -297,12 +301,12 @@ std::function<esp_err_t()> mic_codec_new_func = []() -> esp_err_t
 };
 
 // =============================================================================
-// LilyGoLoraPager member implementations
+// LilyGoLoraPager 成员函数实现
 // =============================================================================
 
 bool LilyGoLoraPager::InitCoreBusAndIoExpander()
 {
-    // 1. I²C bus
+    // 1. I²C 总线
     if (!i2c_bus.Init(i2c_bus_cfg))
     {
         l_i2c.Error("I2C bus init failed");
@@ -310,18 +314,18 @@ bool LilyGoLoraPager::InitCoreBusAndIoExpander()
     }
     i2c_bus.Scan();
 
-    // 2. XL9555 IO expander
-    //    Default Init() drives all output pins HIGH, which enables all peripherals.
+    // 2. XL9555 IO 扩展器
+    //    默认 Init() 将所有输出引脚拉高，从而使能所有外设。
     if (!xl9555.Init(i2c_bus, xl9555_dev_cfg))
     {
         l_xlio.Error("XL9555 init failed");
         return false;
     }
 
-    // Keep SD_DET pin as input; all others as output (already default from Init)
+    // 保持 SD_DET 引脚为输入模式；其余引脚为输出（Init 已默认设置）
     xl9555.SetDirection(kXl9555PinSdDet, Xl9555::DIR_INPUT);
 
-    // 3. BQ25896 charger
+    // 3. BQ25896 充电器
     if (!bq25896.Init(i2c_bus, bq25896_dev_cfg))
     {
         l_pmu.Error("BQ25896 init failed");
@@ -329,7 +333,7 @@ bool LilyGoLoraPager::InitCoreBusAndIoExpander()
     }
     bq25896.ResetDefault();
     bq25896.SetChargeTargetVoltage(4288);  // 4.288 V
-    bq25896.SetChargeCurrent(704);         // 704 mA (≤ 1/2 × 1500 mAh)
+    bq25896.SetChargeCurrent(704);         // 704 mA（≤ 1/2 × 1500 mAh）
     bq25896.EnableMeasure();
 
     return true;
@@ -337,14 +341,14 @@ bool LilyGoLoraPager::InitCoreBusAndIoExpander()
 
 bool LilyGoLoraPager::InitDisplay()
 {
-    // 1. Shared SPI bus
+    // 1. 共享 SPI 总线
     if (!spi_bus.Init(spi_bus_cfg))
     {
         l_spi.Error("SPI bus init failed");
         return false;
     }
 
-    // 2. Pull shared-bus CS lines HIGH before display init to avoid bus conflicts
+    // 2. 在显示屏初始化前将共享总线 CS 引脚拉高，避免总线冲突
     static const gpio_num_t kCsPins[] = {
         GPIO_NUM_36,  // LoRa CS
         GPIO_NUM_39,  // NFC CS
@@ -356,13 +360,13 @@ bool LilyGoLoraPager::InitDisplay()
         gpio_set_level(pin, 1);
     }
 
-    // 3. (Optional) Display hardware reset via XL9555 if wired
+    // 3.（可选）若已连线，通过 XL9555 执行显示屏硬件复位
     //    xl9555.SetLevel(kXl9555PinDispRst, 0);
     //    vTaskDelay(pdMS_TO_TICKS(10));
     //    xl9555.SetLevel(kXl9555PinDispRst, 1);
     //    vTaskDelay(pdMS_TO_TICKS(10));
 
-    // 4. LEDC backlight (off initially)
+    // 4. LEDC 背光（初始关闭）
     if (!ledc_timer.Init(ledc_timer_cfg))
     {
         l_ledc.Error("LEDC timer init failed");
@@ -374,17 +378,17 @@ bool LilyGoLoraPager::InitDisplay()
         return false;
     }
 
-    // 5. ST7796 display panel
+    // 5. ST7796 显示面板
     if (!display.Init(spi_bus, spi_display_cfg))
     {
         l_disp.Error("ST7796 display init failed");
         return false;
     }
-    // ST7796 is a 480×320 controller; T-LoraPager uses a 480×222 window.
-    // Row offset = 49 (visual area starts at controller row 49).
+    // ST7796 为 480×320 控制器；T-LoraPager 使用 480×222 的可视窗口。
+    // 行偏移 = 49（可视区域从控制器第 49 行开始）。
     display.SetGap(0, 49);
 
-    // 6. LVGL port
+    // 6. LVGL 移植层
     if (!lvgl_port.Init(lvgl_port_cfg))
     {
         l_lvgl.Error("LVGL port init failed");
@@ -396,7 +400,7 @@ bool LilyGoLoraPager::InitDisplay()
         return false;
     }
 
-    // 7. Turn backlight on at full brightness
+    // 7. 以最大亮度打开背光
     SetDisplayBrightness(100);
 
     return true;
@@ -404,10 +408,10 @@ bool LilyGoLoraPager::InitDisplay()
 
 bool LilyGoLoraPager::InitAudio()
 {
-    // Enable amplifier via XL9555 (AMP_EN)
+    // 通过 XL9555 使能功放（AMP_EN）
     xl9555.SetLevel(kXl9555PinAmpEn, 1);
 
-    // 1. I²S bus
+    // 1. I²S 总线
     if (!i2s_bus.Init(i2s_bus_cfg))
     {
         l_i2s.Error("I2S bus init failed");
@@ -434,7 +438,7 @@ bool LilyGoLoraPager::InitAudio()
         return false;
     }
 
-    // 2. AudioCodec (ES8311 – single chip for both DAC and ADC)
+    // 2. AudioCodec（ES8311 — 单芯片同时支持 DAC 和 ADC）
     audio_codec.Init(i2s_bus);
 
     if (!audio_codec.AddSpeaker(i2c_bus, kEs8311Addr, spk_codec_new_func))
@@ -461,8 +465,25 @@ bool LilyGoLoraPager::InitKeyboard()
     return true;
 }
 
+bool LilyGoLoraPager::InitEncoder()
+{
+    // A=GPIO40, B=GPIO41, 按钮=GPIO7（与 SEL_BTN 共用，低电平有效）
+    if (!encoder.Init(GPIO_NUM_40, GPIO_NUM_41, GPIO_NUM_7))
+    {
+        l_enc.Error("Encoder init failed");
+        return false;
+    }
+    if (!lvgl_port.AddEncoder(encoder))
+    {
+        l_enc.Error("Failed to add encoder to LVGL port");
+        return false;
+    }
+    l_enc.Info("Encoder initialized (A=40, B=41, BTN=7)");
+    return true;
+}
+
 // =============================================================================
-// Getters
+// 获取器
 // =============================================================================
 
 I2cBus& LilyGoLoraPager::GetI2cBus() { return i2c_bus; }
@@ -476,9 +497,10 @@ AudioCodec& LilyGoLoraPager::GetAudioCodec() { return audio_codec; }
 LvglPort& LilyGoLoraPager::GetLvglPort() { return lvgl_port; }
 Tca8418& LilyGoLoraPager::GetKeyboard() { return tca8418; }
 Bq25896& LilyGoLoraPager::GetPmu() { return bq25896; }
+Encoder& LilyGoLoraPager::GetEncoder() { return encoder; }
 
 // =============================================================================
-// Helpers
+// 辅助方法
 // =============================================================================
 
 void LilyGoLoraPager::SetDisplayBrightness(int percent)
@@ -487,7 +509,7 @@ void LilyGoLoraPager::SetDisplayBrightness(int percent)
         percent = 0;
     if (percent > 100)
         percent = 100;
-    // LEDC 10-bit: max duty = 1023
+    // LEDC 10 位：最大占空比 = 1023
     uint32_t duty = static_cast<uint32_t>(1023 * percent / 100);
     ledc_channel.SetDutyAndUpdate(duty);
 }

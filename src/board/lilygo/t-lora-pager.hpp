@@ -9,6 +9,7 @@
 #include "wrapper/display.hpp"
 #include "wrapper/audio.hpp"
 #include "wrapper/lvgl.hpp"
+#include "wrapper/encoder.hpp"
 #include "device/xl9555.hpp"
 #include "device/st7796.hpp"
 #include "device/tca8418.hpp"
@@ -18,20 +19,20 @@ namespace wrapper
 {
 
 /**
- * @brief LilyGo T-LoraPager board support class (ESP32-S3)
+ * @brief LilyGo T-LoraPager 板级支持类 (ESP32-S3)
  *
- * Singleton that owns and initialises all on-board peripherals:
- *   - I²C bus (SDA=3, SCL=2) — shared by XL9555, BQ25896, TCA8418, ES8311
- *   - Shared SPI bus (MOSI=34, MISO=33, SCK=35) — ST7796, LoRa, NFC, SD
- *   - I²S bus (MCLK=10, SCK=11, WS=18, Dout=45, Din=17) — ES8311 codec
- *   - XL9555 16-bit IO expander (addr=0x20) — peripheral power control
+ * 单例，拥有并初始化所有板载外设：
+ *   - I²C 总线 (SDA=3, SCL=2) — 由 XL9555、BQ25896、TCA8418、ES8311 共用
+ *   - 共享 SPI 总线 (MOSI=34, MISO=33, SCK=35) — ST7796、LoRa、NFC、SD
+ *   - I²S 总线 (MCLK=10, SCK=11, WS=18, Dout=45, Din=17) — ES8311 编解码器
+ *   - XL9555 16 位 IO 扩展器 (addr=0x20) — 外设电源控制
  *   - ST7796 SPI LCD (480×222, CS=38, DC=37, BL=42)
- *   - LVGL port backed by the ST7796
- *   - ES8311 audio codec via AudioCodec
- *   - TCA8418 keyboard matrix controller (addr=0x34, INT=GPIO6)
- *   - BQ25896 battery charger (addr=0x6B)
+ *   - 基于 ST7796 的 LVGL 移植层
+ *   - ES8311 音频编解码器 via AudioCodec
+ *   - TCA8418 键盘矩阵控制器 (addr=0x34, INT=GPIO6)
+ *   - BQ25896 电池充电器 (addr=0x6B)
  *
- * Usage:
+ * 用法：
  * @code
  *   auto& board = wrapper::LilyGoLoraPager::GetInstance();
  *   board.InitCoreBusAndIoExpander();
@@ -60,28 +61,38 @@ class LilyGoLoraPager
     }
 
     // -----------------------------------------------------------------------
-    // Initialisation — call in order
+    // 初始化 — 按顺序调用
     // -----------------------------------------------------------------------
 
-    /** @brief Init I²C bus + XL9555 IO expander + BQ25896 charger */
+    /** @brief 初始化 I²C 总线 + XL9555 IO 扩展器 + BQ25896 充电器 */
     bool InitCoreBusAndIoExpander();
 
     /**
-     * @brief Init shared SPI bus + ST7796 display + LEDC backlight + LVGL.
+     * @brief 初始化共享 SPI 总线 + ST7796 显示屏 + LEDC 背光 + LVGL。
      *
-     * Also configures LoRa / NFC / SD chip-select GPIOs to HIGH so they
-     * do not interfere with SPI bus initialisation.
+     * 同时将 LoRa / NFC / SD 片选 GPIO 拉高，
+     * 避免干扰 SPI 总线初始化。
      */
     bool InitDisplay();
 
-    /** @brief Init I²S bus + ES8311 audio codec (speaker + microphone) */
+    /** @brief 初始化 I²S 总线 + ES8311 音频编解码器（扬声器 + 麦克风）*/
     bool InitAudio();
 
-    /** @brief Init TCA8418 keyboard matrix controller (4 rows × 10 cols) */
+    /** @brief 初始化 TCA8418 键盘矩阵控制器（4 行 × 10 列）*/
     bool InitKeyboard();
 
+    /**
+     * @brief 初始化旋转编码器并将其注册为 LVGL 输入设备。
+     *
+     * 引脚分配：A = GPIO40，B = GPIO41，按鈕 = GPIO7（与 SEL_BTN 共用）。
+     * 同时创建 LVGL 焦点组并设为默认组。
+     *
+     * @note 必须在 InitDisplay() 之后调用。
+     */
+    bool InitEncoder();
+
     // -----------------------------------------------------------------------
-    // Getters
+    // 获取器
     // -----------------------------------------------------------------------
 
     I2cBus& GetI2cBus();
@@ -95,24 +106,24 @@ class LilyGoLoraPager
     LvglPort& GetLvglPort();
     Tca8418& GetKeyboard();
     Bq25896& GetPmu();
+    Encoder& GetEncoder();
 
     // -----------------------------------------------------------------------
-    // Convenience helpers
+    // 便捷辅助方法
     // -----------------------------------------------------------------------
 
-    /** @brief Set display backlight 0–100 % */
+    /** @brief 设置显示屏背光亮度 0–100% */
     void SetDisplayBrightness(int percent);
 
-    /** @brief Turn backlight on / off */
+    /** @brief 打开 / 关闭背光 */
     void SetDisplayBacklight(bool on);
 
     /**
-     * @brief Control a peripheral power rail via XL9555.
+     * @brief 通过 XL9555 控制外设电源轨。
      *
-     * @param xl9555_pin  IO expander pin number (0-15). Use the kXl9555Pin*
-     *                    constants defined in t-lora-pager.cpp once the
-     *                    schematic has been verified.
-     * @param enable      true = HIGH (enable), false = LOW (disable)
+     * @param xl9555_pin  IO 扩展器引脚编号 (0-15)。原理图确认后，
+     *                    使用 t-lora-pager.cpp 中定义的 kXl9555Pin* 常量。
+     * @param enable      true = 高电平（使能），false = 低电平（禁用）
      */
     bool SetPeripheralPower(uint32_t xl9555_pin, bool enable);
 };
