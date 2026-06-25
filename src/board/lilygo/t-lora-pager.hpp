@@ -14,6 +14,7 @@
 #include "device/st7796.hpp"
 #include "device/tca8418.hpp"
 #include "device/bq25896.hpp"
+#include "device/lilygo_t_lora_pager_keyboard.hpp"
 
 namespace wrapper
 {
@@ -107,6 +108,7 @@ class LilyGoLoraPager
     Tca8418& GetKeyboard();
     Bq25896& GetPmu();
     Encoder& GetEncoder();
+    LilyGoLoRaPagerKeyboard& GetKeyboardDriver();
 
     // -----------------------------------------------------------------------
     // 便捷辅助方法

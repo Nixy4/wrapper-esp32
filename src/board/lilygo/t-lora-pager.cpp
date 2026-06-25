@@ -23,6 +23,7 @@
 #include "device/st7796.hpp"
 #include "device/tca8418.hpp"
 #include "device/bq25896.hpp"
+#include "device/lilygo_t_lora_pager_keyboard.hpp"
 
 namespace wrapper
 {
@@ -221,6 +222,7 @@ Logger l_audio("LoraPager", "Audio");
 Logger l_lvgl("LoraPager", "LVGL");
 Logger l_kb("LoraPager", "I2C", "TCA8418");
 Logger l_pmu("LoraPager", "I2C", "BQ25896");
+Logger l_kbdrv("LoraPager", "Keyboard");
 
 // =============================================================================
 // 设备 / 总线实例（文件作用域，只构造一次）
@@ -240,6 +242,9 @@ Bq25896 bq25896(l_pmu);
 // 旋转编码器（A=GPIO40, B=GPIO41, 按钮=GPIO7）
 Logger l_enc("LoraPager", "Encoder");
 Encoder encoder;
+
+// 高层键盘驱动（封装 TCA8418，含模式解码）
+LilyGoLoRaPagerKeyboard keyboard_driver(l_kbdrv, tca8418);
 
 // =============================================================================
 // ES8311 编解码器工厂 lambda
@@ -462,6 +467,7 @@ bool LilyGoLoraPager::InitKeyboard()
         l_kb.Error("TCA8418 keyboard init failed");
         return false;
     }
+    l_kbdrv.Info("LilyGoLoRaPagerKeyboard driver ready (4x10)");
     return true;
 }
 
@@ -498,6 +504,7 @@ LvglPort& LilyGoLoraPager::GetLvglPort() { return lvgl_port; }
 Tca8418& LilyGoLoraPager::GetKeyboard() { return tca8418; }
 Bq25896& LilyGoLoraPager::GetPmu() { return bq25896; }
 Encoder& LilyGoLoraPager::GetEncoder() { return encoder; }
+LilyGoLoRaPagerKeyboard& LilyGoLoraPager::GetKeyboardDriver() { return keyboard_driver; }
 
 // =============================================================================
 // 辅助方法
