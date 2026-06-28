@@ -49,7 +49,7 @@ namespace wrapper
 class LilyGoLoraPager
 {
    private:
-    LilyGoLoraPager() = default;
+        LilyGoLoraPager() = default;
     ~LilyGoLoraPager() = default;
 
     LilyGoLoraPager(const LilyGoLoraPager&) = delete;
@@ -64,9 +64,13 @@ class LilyGoLoraPager
         return instance;
     }
 
+    std::atomic<bool> shutdown_requested{false};
+
     // -----------------------------------------------------------------------
     // 初始化 — 按顺序调用
     // -----------------------------------------------------------------------
+
+    bool InitBootButton();  // GPIO0 低电平触发软件关机
 
     /** @brief 初始化 I²C 总线 + XL9555 IO 扩展器 + BQ25896 充电器 */
     bool InitCoreBusAndIoExpander();
@@ -144,6 +148,9 @@ class LilyGoLoraPager
      * @param enable      true = 高电平（使能），false = 低电平（禁用）
      */
     bool SetPeripheralPower(uint32_t xl9555_pin, bool enable);
+
+    void BootButtonHandler();
+    void KeyboardHandler();
 };
 
 }  // namespace wrapper

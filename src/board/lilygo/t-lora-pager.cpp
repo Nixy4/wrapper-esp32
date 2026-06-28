@@ -28,6 +28,22 @@
 namespace wrapper
 {
 
+gpio_config_t boot_button_gpio_cfg = {.pin_bit_mask = (1ULL << GPIO_NUM_0),
+                                      .mode = GPIO_MODE_INPUT,
+                                      .pull_up_en = GPIO_PULLUP_ENABLE,
+                                      .pull_down_en = GPIO_PULLDOWN_DISABLE,
+                                      .intr_type = GPIO_INTR_NEGEDGE};
+
+static void boot_button_isr_handler(void* arg)
+{
+    auto* board = static_cast<LilyGoLoraPager*>(arg);
+    if (board && gpio_get_level(GPIO_NUM_0) == 0)  // 确认低电平触发
+    {
+        board->shutdown_requested.store(true);
+    }
+    ESP_LOGE("LoraPager", "Boot button pressed, shutdown requested.");
+}
+
 // =============================================================================
 // XL9555 虚拟引脚分配
 // TODO: 请对照 T-LoraPager 原理图 PDF 确认具体编号。
@@ -321,6 +337,15 @@ std::function<esp_err_t()> mic_codec_new_func = []() -> esp_err_t
 // LilyGoLoraPager 成员函数实现
 // =============================================================================
 
+bool LilyGoLoraPager::InitBootButton()
+{
+    // 0. 初始化 GPIO0（BOOT 按钮）为输入，低电平触发软件关机
+    gpio_config(&boot_button_gpio_cfg);
+    gpio_install_isr_service(0);
+    gpio_isr_handler_add(GPIO_NUM_0, boot_button_isr_handler, this);
+    return true;
+}
+
 bool LilyGoLoraPager::InitCoreBusAndIoExpander()
 {
     // 1. I²C 总线
@@ -563,6 +588,17 @@ bool LilyGoLoraPager::SetPeripheralPower(uint32_t xl9555_pin, bool enable)
 {
     return xl9555.SetLevel(xl9555_pin, enable ? 1 : 0);
 }
+
+void LilyGoLoraPager::BootButtonHandler()
+{
+    if (shutdown_requested.load())
+    {
+        GetPmu().Shutdown();
+        shutdown_requested.store(false);  // 重置标志，避免重复关机
+    }
+}
+
+void LilyGoLoraPager::KeyboardHandler() { GetKeyboardDriver().Poll(); }
 
 }  // namespace wrapper
 
